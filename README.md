@@ -14,13 +14,20 @@ Mac の初期セットアップ記録と設定ファイル管理。
 - [1Password](https://1password.com/downloads/mac/)
 - [Xcode](https://apps.apple.com/jp/app/xcode/id497799835)
 
-### 2. Homebrew のインストール
+### 2. git の初期設定
+
+```sh
+git config --global user.name "mura123yasu"
+git config --global user.email "mura123yasu@gmail.com"
+```
+
+### 3. Homebrew のインストール
 
 ```sh
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-### 3. パッケージのインストール
+### 4. パッケージのインストール
 
 ```sh
 brew bundle
@@ -28,20 +35,20 @@ brew bundle
 
 > `Brewfile` を使って一括インストール。
 
-### 4. fzf のシェル統合
+### 5. fzf のシェル統合
 
 ```sh
 $(brew --prefix)/opt/fzf/install
 ```
 
-### 5. dotfiles のセットアップ
+### 6. dotfiles のセットアップ
 
 ```sh
 # リポジトリを clone
-ghq get y-murata/dotfiles
+ghq get mura123yasu/dotfiles
 
 # シンボリックリンクを作成
-ln -sf ~/ghq/github.com/y-murata/dotfiles/.zshrc ~/.zshrc
+ln -sf ~/ghq/github.com/mura123yasu/dotfiles/.zshrc ~/.zshrc
 ```
 
 ## dotfiles の構成
