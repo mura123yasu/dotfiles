@@ -38,10 +38,10 @@ $(brew --prefix)/opt/fzf/install
 
 ```sh
 # リポジトリを clone
-ghq get y-murata/dotfiles
+ghq get mura123yasu/dotfiles
 
 # シンボリックリンクを作成
-ln -sf ~/ghq/github.com/y-murata/dotfiles/.zshrc ~/.zshrc
+ln -sf ~/ghq/github.com/mura123yasu/dotfiles/.zshrc ~/.zshrc
 ```
 
 ## dotfiles の構成
