@@ -49,6 +49,8 @@ ghq get mura123yasu/dotfiles
 
 # シンボリックリンクを作成
 ln -sf ~/ghq/github.com/mura123yasu/dotfiles/.zshrc ~/.zshrc
+ln -sf ~/ghq/github.com/mura123yasu/dotfiles/.claude/settings.json ~/.claude/settings.json
+ln -sf ~/ghq/github.com/mura123yasu/dotfiles/.claude/statusline-command.sh ~/.claude/statusline-command.sh
 ```
 
 ## dotfiles の構成
@@ -57,6 +59,8 @@ ln -sf ~/ghq/github.com/mura123yasu/dotfiles/.zshrc ~/.zshrc
 | ---------- | ----------------------------------- |
 | `.zshrc`   | zsh の設定（ghq + fzf の統合など）  |
 | `Brewfile` | Homebrew でインストールするパッケージ一覧 |
+| `.claude/settings.json` | Claude Code のグローバル設定（ステータスライン等） |
+| `.claude/statusline-command.sh` | ステータスライン表示スクリプト |
 
 ## インストール済みツール
 
