@@ -11,3 +11,6 @@ function fzf-ghq() {
   fi
 }
 alias g='fzf-ghq'
+
+# ls aliases
+alias ll='ls -la'
