@@ -1,5 +1,5 @@
 # 左側に全て表示、powerline 丸みスタイル
-format = """[](fg:#4C566A)$directory[](fg:#4C566A bg:#5E81AC)${custom.git_info}[](fg:#5E81AC bg:#B48EAD)$time[](fg:#B48EAD bg:#EBCB8B)$battery[](fg:#EBCB8B) $character"""
+format = """[](fg:#4C566A)$directory[](fg:#4C566A bg:#5E81AC)${custom.git_info}[](fg:#5E81AC bg:#A3BE8C)$time[](fg:#A3BE8C bg:#EBCB8B)$battery[](fg:#EBCB8B) $character"""
 
 right_format = ""
 
@@ -24,7 +24,7 @@ style = "bg:#EBCB8B fg:#1E1E2E"
 [time]
 disabled = false
 time_format = "%R"
-style = "bg:#B48EAD fg:#1E1E2E"
+style = "bg:#A3BE8C fg:#1E1E2E"
 format = "[ $time ]($style)"
 
 [directory]
