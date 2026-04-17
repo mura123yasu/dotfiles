@@ -1,5 +1,5 @@
 # 左側に全て表示、powerline 丸みスタイル
-format = """[](fg:#3B4252)$directory[](fg:#3B4252 bg:#5E81AC)$git_branch$custom[](fg:#5E81AC bg:#A6E3A1)$battery[](fg:#A6E3A1 bg:#89B4FA)$time[](fg:#89B4FA)$cmd_duration $character"""
+format = """[](fg:#3B4252)$directory[](fg:#3B4252 bg:#5E81AC)$git_branch$custom[](fg:#5E81AC bg:#A6E3A1)$battery[](fg:#A6E3A1 bg:#89B4FA)$time$cmd_duration $character"""
 
 right_format = ""
 
@@ -16,7 +16,7 @@ format = "[](fg:#89B4FA bg:#F9E2AF)[ $duration ]($style)[](fg:#F9E2AF)"
 full_symbol = "󰁹 "
 charging_symbol = "󰂄 "
 discharging_symbol = "󰂃 "
-format = "[ $symbol$percentage ]($style)"
+format = "[ $percentage ]($style)"
 
 [[battery.display]]
 threshold = 30
@@ -30,7 +30,7 @@ style = "bg:#A6E3A1 fg:#1E1E2E"
 disabled = false
 time_format = "%R"
 style = "bg:#89B4FA fg:#1E1E2E"
-format = "[ 󱑎 $time ]($style)"
+format = "[ $time ]($style)"
 
 [directory]
 style = "bg:#3B4252 fg:#E5E9F0"
