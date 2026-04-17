@@ -1,16 +1,11 @@
 # 左側に全て表示、powerline 丸みスタイル
-format = """[](fg:#3B4252)$directory[](fg:#3B4252 bg:#5E81AC)$git_branch$custom[](fg:#5E81AC bg:#A6E3A1)$battery[](fg:#A6E3A1 bg:#89B4FA)$time$cmd_duration $character"""
+format = """[](fg:#4C566A)$directory[](fg:#4C566A bg:#5E81AC)$git_branch$custom[](fg:#5E81AC bg:#B48EAD)$time[](fg:#B48EAD bg:#EBCB8B)$battery[](fg:#EBCB8B) $character"""
 
 right_format = ""
 
 [character]
 success_symbol = "[❯](bold green)"
 error_symbol = "[❯](bold red)"
-
-[cmd_duration]
-min_time = 500
-style = "bg:#F9E2AF fg:#1E1E2E"
-format = "[](fg:#89B4FA bg:#F9E2AF)[ $duration ]($style)[](fg:#F9E2AF)"
 
 [battery]
 full_symbol = "󰁹 "
@@ -24,24 +19,23 @@ style = "bg:#F38BA8 fg:#1E1E2E"
 
 [[battery.display]]
 threshold = 100
-style = "bg:#A6E3A1 fg:#1E1E2E"
+style = "bg:#EBCB8B fg:#1E1E2E"
 
 [time]
 disabled = false
 time_format = "%R"
-style = "bg:#89B4FA fg:#1E1E2E"
+style = "bg:#B48EAD fg:#1E1E2E"
 format = "[ $time ]($style)"
 
 [directory]
-style = "bg:#3B4252 fg:#E5E9F0"
+style = "bg:#4C566A fg:#ECEFF4"
 format = "[$path ]($style)"
 truncation_length = 3
 truncate_to_repo = true
 
 [git_branch]
-symbol = " "
 style = "bg:#5E81AC fg:#ECEFF4"
-format = "[$symbol$branch ]($style)"
+format = "[ $branch]($style)"
 
 [git_status]
 disabled = true
@@ -50,7 +44,7 @@ disabled = true
 command = "echo '*'"
 when = "git status --porcelain 2>/dev/null | grep -qm1 ."
 style = "bg:#5E81AC fg:#ECEFF4"
-format = "[$output]($style)"
+format = "[$output ]($style)"
 
 [line_break]
 disabled = true
