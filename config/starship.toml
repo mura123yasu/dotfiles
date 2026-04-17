@@ -1,8 +1,7 @@
-# 1行にまとめ、左側のデザインを定義
-format = """[](fg:#3B4252)$directory[](fg:#3B4252 bg:#5E81AC)$git_branch$custom[](fg:#5E81AC) $character"""
+# 左側に全て表示、powerline 丸みスタイル
+format = """[](fg:#3B4252)$directory[](fg:#3B4252 bg:#5E81AC)$git_branch$custom[](fg:#5E81AC bg:#A6E3A1)$battery[](fg:#A6E3A1 bg:#89B4FA)$time[](fg:#89B4FA)$cmd_duration $character"""
 
-# 右端に時刻だけ表示（隅っこに情報を置くスタイル）
-right_format = """$cmd_duration$battery$time"""
+right_format = ""
 
 [character]
 success_symbol = "[❯](bold green)"
@@ -11,15 +10,14 @@ error_symbol = "[❯](bold red)"
 [cmd_duration]
 min_time = 500
 style = "bg:#F9E2AF fg:#1E1E2E"
-format = "[ $duration ]($style) "
+format = "[](fg:#89B4FA bg:#F9E2AF)[ $duration ]($style)[](fg:#F9E2AF)"
 
 [battery]
 full_symbol = "󰁹 "
 charging_symbol = "󰂄 "
 discharging_symbol = "󰂃 "
-format = "[ $symbol$percentage ]($style) "
+format = "[ $symbol$percentage ]($style)"
 
-# バッテリー残量によって色を変える設定
 [[battery.display]]
 threshold = 30
 style = "bg:#F38BA8 fg:#1E1E2E"
@@ -48,14 +46,12 @@ format = "[$symbol$branch ]($style)"
 [git_status]
 disabled = true
 
-# git ダーティ表示: dirty なら * のみ表示
 [custom.git_dirty]
 command = "echo '*'"
 when = "git status --porcelain 2>/dev/null | grep -qm1 ."
 style = "bg:#5E81AC fg:#ECEFF4"
 format = "[$output]($style)"
 
-# --- 不要な機能をオフにする ---
 [line_break]
 disabled = true
 [gcloud]
