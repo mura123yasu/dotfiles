@@ -1,25 +1,11 @@
 # 左側に全て表示、powerline 丸みスタイル
-format = """[](fg:#4C566A)$directory[](fg:#4C566A bg:#5E81AC)${custom.git_info}[](fg:#5E81AC bg:#A3BE8C)$time[](fg:#A3BE8C bg:#EBCB8B)$battery[](fg:#EBCB8B) $character"""
+format = """[](fg:#4C566A)$directory[](fg:#4C566A bg:#5E81AC)${custom.git_info}[](fg:#5E81AC bg:#A3BE8C)$time[](fg:#A3BE8C) $character"""
 
 right_format = ""
 
 [character]
 success_symbol = "[❯](bold green)"
 error_symbol = "[❯](bold red)"
-
-[battery]
-full_symbol = "󰁹 "
-charging_symbol = "󰂄 "
-discharging_symbol = "󰂃 "
-format = "[ $percentage ]($style)"
-
-[[battery.display]]
-threshold = 30
-style = "bg:#F38BA8 fg:#1E1E2E"
-
-[[battery.display]]
-threshold = 100
-style = "bg:#EBCB8B fg:#1E1E2E"
 
 [time]
 disabled = false
