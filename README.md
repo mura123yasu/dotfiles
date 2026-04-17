@@ -70,4 +70,5 @@ ln -sf ~/ghq/github.com/mura123yasu/dotfiles/.claude/statusline-command.sh ~/.cl
 | ghq     | リポジトリ管理                |
 | tig     | Git ログの TUI ビューアー     |
 | fzf     | ファジーファインダー          |
+| alfred  | ランチャー                    |
 | ghostty | ターミナルエミュレーター      |
