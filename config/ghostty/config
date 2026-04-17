@@ -1,0 +1,17 @@
+# --- 見た目の修正 ---
+background-opacity = 0.85
+background-blur-radius = 20
+
+# --- テーマ ---
+theme = Solarized Dark Higher Contrast
+
+# --- フォント ---
+font-size = 13
+font-family = "JetBrainsMono Nerd Font"
+
+# --- ウィンドウ設定 ---
+window-decoration = true
+macos-window-shadow = true
+
+# --- 操作性 ---
+macos-option-as-alt = true

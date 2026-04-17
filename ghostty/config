@@ -1,5 +1,0 @@
-# Ghostty configuration
-
-# Background blur (macOS)
-background-opacity = 0.85
-background-blur-radius = 20
