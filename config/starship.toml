@@ -1,5 +1,5 @@
 # 左側に全て表示、powerline 丸みスタイル
-format = """[](fg:#4C566A)$directory[](fg:#4C566A bg:#5E81AC)$git_branch$custom[](fg:#5E81AC bg:#B48EAD)$time[](fg:#B48EAD bg:#EBCB8B)$battery[](fg:#EBCB8B) $character"""
+format = """[](fg:#4C566A)$directory[](fg:#4C566A bg:#5E81AC)${custom.git_info}[](fg:#5E81AC bg:#B48EAD)$time[](fg:#B48EAD bg:#EBCB8B)$battery[](fg:#EBCB8B) $character"""
 
 right_format = ""
 
@@ -34,17 +34,16 @@ truncation_length = 3
 truncate_to_repo = true
 
 [git_branch]
-style = "bg:#5E81AC fg:#ECEFF4"
-format = "[ $branch]($style)"
+disabled = true
 
 [git_status]
 disabled = true
 
-[custom.git_dirty]
-command = "echo '*'"
-when = "git status --porcelain 2>/dev/null | grep -qm1 ."
+[custom.git_info]
+command = 'branch=$(git branch --show-current 2>/dev/null); git status --porcelain 2>/dev/null | grep -qm1 . && echo "${branch}*" || echo "$branch"'
+when = "git rev-parse --is-inside-work-tree 2>/dev/null"
 style = "bg:#5E81AC fg:#ECEFF4"
-format = "[$output ]($style)"
+format = "[ $output ]($style)"
 
 [line_break]
 disabled = true
