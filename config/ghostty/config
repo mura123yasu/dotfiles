@@ -15,3 +15,4 @@ macos-window-shadow = true
 
 # --- 操作性 ---
 macos-option-as-alt = true
+keybind = shift+enter=text:\x1b\n
