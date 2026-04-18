@@ -35,6 +35,7 @@ link() {
 info "ホームディレクトリの dotfiles をリンク中..."
 link "$DOTFILES_DIR/home/.zshrc"    "$HOME/.zshrc"
 link "$DOTFILES_DIR/home/.zprofile" "$HOME/.zprofile"
+link "$DOTFILES_DIR/home/.tmux.conf" "$HOME/.tmux.conf"
 
 # ---- ~/.config 以下の設定 ----
 info "~/.config の設定をリンク中..."
