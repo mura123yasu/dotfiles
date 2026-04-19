@@ -1,0 +1,66 @@
+# =============================================================================
+# Zsh Configuration for WSL (Ubuntu)
+# =============================================================================
+
+# --- 1. Path & Environment Variables ---
+export LANG=ja_JP.UTF-8
+export EDITOR="code --wait"
+export PATH="$HOME/.local/bin:$HOME/go/bin:$PATH"
+
+# --- 2. Zsh Completion ---
+autoload -Uz compinit && compinit
+
+# --- 3. Zsh Plugins ---
+# apt install zsh-autosuggestions zsh-syntax-highlighting でインストール
+[[ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
+    source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+[[ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] && \
+    source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# --- 4. UI & Prompt (Starship) ---
+eval "$(starship init zsh)"
+
+# --- 5. Tool Initializations ---
+# mise (Node.js等のバージョン管理)
+eval "$(mise activate zsh)"
+
+# direnv
+eval "$(direnv hook zsh)"
+
+# fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# --- 6. Aliases ---
+# lsをモダンなezaに置き換え
+alias ls='eza --icons'
+alias ll='eza -l --icons'
+alias la='eza -la --icons'
+
+# catをモダンなbatに置き換え（Ubuntu では batcat としてインストールされる）
+alias cat='batcat'
+
+# よく使うディレクトリへのショートカット
+alias cdd='cd ~/Downloads'
+
+# MRマージ後にmainへ戻ってpullする
+alias gomain='git checkout main && git pull'
+
+# claude-workspace用のalias（~/claude-workspace で Claude を起動）
+alias cw='cd ~/claude-workspace && claude'
+
+# --- 7. Functions ---
+
+# ghq + fzf: リポジトリ一覧を検索して移動
+function g() {
+  local dir
+  dir=$(ghq list | fzf +m) &&
+  cd $(ghq root)/$dir
+}
+
+# 履歴をfzfで検索して再実行
+function fzf-select-history() {
+  BUFFER=$(history -n -r 1 | fzf --no-sort +m --query "$LBUFFER" --prompt="History > ")
+  CURSOR=$#BUFFER
+}
+zle -N fzf-select-history
+bindkey '^R' fzf-select-history

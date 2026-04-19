@@ -1,8 +1,37 @@
 # dotfiles
 
-Mac の初期セットアップ記録と設定ファイル管理。
+Mac / WSL (Ubuntu) の初期セットアップ記録と設定ファイル管理。
 
-## セットアップ手順
+## WSL セットアップ手順
+
+### 1. git の初期設定
+
+```sh
+git config --global user.name "mura123yasu"
+git config --global user.email "mura123yasu@gmail.com"
+```
+
+### 2. リポジトリを clone
+
+```sh
+mkdir -p ~/ghq/github.com/mura123yasu
+git clone https://github.com/mura123yasu/dotfiles ~/ghq/github.com/mura123yasu/dotfiles
+```
+
+### 3. セットアップスクリプトを実行
+
+```sh
+zsh ~/ghq/github.com/mura123yasu/dotfiles/install.wsl.sh
+```
+
+スクリプトが以下を自動で行います：
+- 必要パッケージのインストール（gh, eza, fzf, starship, mise, direnv, bat 等）
+- デフォルトシェルを zsh に変更
+- dotfiles のシンボリックリンク展開
+
+---
+
+## Mac セットアップ手順
 
 ### 1. アプリのインストール（手動）
 
