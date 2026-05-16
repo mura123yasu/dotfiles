@@ -16,7 +16,7 @@ session_resets_at=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // e
 current_time=$(date +%H:%M)
 
 # --- Effort level: try status JSON first, then fall back to settings.json ---
-effort_raw=$(echo "$input" | jq -r '.effortLevel // .thinking.effort // .effort // empty' 2>/dev/null)
+effort_raw=$(echo "$input" | jq -r '(.effortLevel // .thinking.effort // .effort // empty) | if type == "object" then .level else . end' 2>/dev/null)
 if [ -z "$effort_raw" ] && [ -f "$HOME/.claude/settings.json" ]; then
   effort_raw=$(jq -r '.effortLevel // empty' "$HOME/.claude/settings.json" 2>/dev/null)
 fi
