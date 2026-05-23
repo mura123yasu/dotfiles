@@ -25,6 +25,8 @@ brew "zsh-autosuggestions"
 brew "zsh-syntax-highlighting"
 
 # --- Casks (GUI Apps) ---
+brew "colima"
+cask "docker"
 cask "ghostty"
 
 # --- Fonts ---
