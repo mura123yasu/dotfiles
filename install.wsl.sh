@@ -46,6 +46,9 @@ sudo apt-get install -y -qq \
     tig \
     tmux \
     jq \
+    htop \
+    vim \
+    peco \
     bubblewrap \
     socat \
     zsh-autosuggestions \
@@ -94,6 +97,20 @@ if ! has mise; then
     success "mise インストール完了"
 fi
 
+# docker
+if ! has docker; then
+    info "Docker をインストール中..."
+    sudo install -m 0755 -d /etc/apt/keyrings
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+    sudo chmod a+r /etc/apt/keyrings/docker.asc
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
+        | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt-get update -qq
+    sudo apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    sudo usermod -aG docker "$USER"
+    success "docker インストール完了（docker グループは再ログイン後に有効）"
+fi
+
 # ghq
 if ! has ghq; then
     info "ghq をインストール中..."
@@ -119,9 +136,11 @@ link "$DOTFILES_DIR/home/.tmux.conf" "$HOME/.tmux.conf"
 
 info "~/.config の設定をリンク中..."
 mkdir -p "$HOME/.config/git"
+mkdir -p "$HOME/.config/mise"
 
-link "$DOTFILES_DIR/config/starship.toml" "$HOME/.config/starship.toml"
-link "$DOTFILES_DIR/config/git/ignore"    "$HOME/.config/git/ignore"
+link "$DOTFILES_DIR/config/starship.toml"     "$HOME/.config/starship.toml"
+link "$DOTFILES_DIR/config/git/ignore"        "$HOME/.config/git/ignore"
+link "$DOTFILES_DIR/config/mise/config.toml"  "$HOME/.config/mise/config.toml"
 
 info "Claude Code 設定をリンク中..."
 mkdir -p "$HOME/.claude/skills"
