@@ -51,8 +51,8 @@ alias cdd='cd ~/Downloads'
 # MRマージ後にmainへ戻ってpullする
 alias gomain='git checkout main && git pull'
 
-# claude-workspace用のalias（~/claude-workspace で Claude を起動）
-alias cw='cd ~/claude-workspace && claude'
+# local-workspace用のalias（~/ghq/github.com/mura123yasu/local-workspace で Claude を起動）
+alias cw='cd ~/ghq/github.com/mura123yasu/local-workspace && claude'
 
 # --- 7. Functions ---
 
