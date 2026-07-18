@@ -57,7 +57,6 @@
       "Read(~/.aws/**)",
       "Read(~/.git-credentials)",
       "Read(~/.config/gh/**)",
-      "Read(~/Library/Keychains/**)",
       "Edit(~/.zshrc)",
       "Edit(~/.bashrc)"
     ],
@@ -75,8 +74,7 @@
       "denyRead": [
         "~/.ssh",
         "~/.aws",
-        "~/.config/gh",
-        "~/Library/Keychains"
+        "~/.config/gh"
       ]
     },
     "network": {
