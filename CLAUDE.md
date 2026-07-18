@@ -16,5 +16,5 @@
 
 ## マルチリポジトリ統合管理
 
-- 全リポジトリの進捗・バックログは `~/ghq/github.com/mura123yasu/local-workspace` で統合管理している。
+- 全リポジトリの進捗・バックログは `~/ghq/github.com/mura123yasu/local-workspace`（Mac）/ `~/ghq/github.com/mura123yasu/local-workspace-win`（WSL）で統合管理している。
 - 「次何すればいい？」と聞かれたら local-workspace の `/next` スキルとバックログを参照すること。
