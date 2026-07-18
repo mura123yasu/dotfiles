@@ -68,6 +68,30 @@
     ],
     "disableBypassPermissionsMode": "disable"
   },
+  "sandbox": {
+    "enabled": true,
+    "failIfUnavailable": false,
+    "filesystem": {
+      "denyRead": [
+        "~/.ssh",
+        "~/.aws",
+        "~/.config/gh",
+        "~/Library/Keychains"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "api.anthropic.com",
+        "*.anthropic.com",
+        "*.claude.com",
+        "github.com",
+        "*.github.com",
+        "*.githubusercontent.com",
+        "registry.npmjs.org",
+        "registry.yarnpkg.com"
+      ]
+    }
+  },
   "hooks": {
     "PreToolUse": [
       {
