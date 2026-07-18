@@ -54,6 +54,7 @@ link "$DOTFILES_DIR/claude/statusline-command.sh"   "$HOME/.claude/statusline-co
 link "$DOTFILES_DIR/claude/skills/github-push.md"   "$HOME/.claude/skills/github-push.md"
 link "$DOTFILES_DIR/claude/hooks"                   "$HOME/.claude/hooks"
 link "$DOTFILES_DIR/claude/rules"                   "$HOME/.claude/rules"
+link "$DOTFILES_DIR/claude/agents"                  "$HOME/.claude/agents"
 
 echo ""
 info "完了。ターミナルを再起動してください。"
