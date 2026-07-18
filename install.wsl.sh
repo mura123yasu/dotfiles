@@ -46,6 +46,8 @@ sudo apt-get install -y -qq \
     tig \
     tmux \
     jq \
+    bubblewrap \
+    socat \
     zsh-autosuggestions \
     zsh-syntax-highlighting
 
@@ -126,6 +128,9 @@ mkdir -p "$HOME/.claude/skills"
 link "$DOTFILES_DIR/claude/settings.json"           "$HOME/.claude/settings.json"
 link "$DOTFILES_DIR/claude/statusline-command.sh"   "$HOME/.claude/statusline-command.sh"
 link "$DOTFILES_DIR/claude/skills/github-push.md"   "$HOME/.claude/skills/github-push.md"
+link "$DOTFILES_DIR/claude/hooks"                   "$HOME/.claude/hooks"
+link "$DOTFILES_DIR/claude/rules"                   "$HOME/.claude/rules"
+link "$DOTFILES_DIR/claude/agents"                  "$HOME/.claude/agents"
 
 # =============================================================================
 echo ""

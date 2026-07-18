@@ -82,14 +82,44 @@ ln -sf ~/ghq/github.com/mura123yasu/dotfiles/.claude/settings.json ~/.claude/set
 ln -sf ~/ghq/github.com/mura123yasu/dotfiles/.claude/statusline-command.sh ~/.claude/statusline-command.sh
 ```
 
-## dotfiles の構成
+## ファイル管理方針（共用 / OS 別）
 
-| ファイル   | 説明                                |
-| ---------- | ----------------------------------- |
-| `.zshrc`   | zsh の設定（ghq + fzf の統合など）  |
-| `Brewfile` | Homebrew でインストールするパッケージ一覧 |
-| `.claude/settings.json` | Claude Code のグローバル設定（ステータスライン等） |
-| `.claude/statusline-command.sh` | ステータスライン表示スクリプト |
+Mac と WSL で無理に設定ファイルを共用せず、差分が出るものは OS 別ファイルに切り出して管理する。
+**新しいファイルを追加・変更したら、必ずこの表を更新すること。**
+
+### 両 OS で共用
+
+| ファイル | リンク先 | 説明 |
+| -------- | -------- | ---- |
+| `home/.tmux.conf` | `~/.tmux.conf` | tmux 設定 |
+| `config/starship.toml` | `~/.config/starship.toml` | プロンプト設定 |
+| `config/git/ignore` | `~/.config/git/ignore` | グローバル gitignore |
+| `claude/settings.json` | `~/.claude/settings.json` | Claude Code グローバル設定（permissions / sandbox / hooks 等）。macOS 専用の deny ルール（`pbcopy` 等）は WSL では発火しないだけで無害 |
+| `claude/statusline-command.sh` | `~/.claude/statusline-command.sh` | ステータスライン表示スクリプト |
+| `claude/skills/` | `~/.claude/skills/` 以下 | Claude Code スキル |
+| `claude/hooks/` | `~/.claude/hooks` | PreToolUse ガードフック |
+| `claude/rules/` | `~/.claude/rules` | モデルルーティング等のルール |
+| `claude/agents/` | `~/.claude/agents` | カスタムエージェント定義 |
+| `CLAUDE.md` | （リポジトリ直下） | Claude Code 向けグローバルルール |
+
+### Mac 専用
+
+| ファイル | 説明 |
+| -------- | ---- |
+| `install.sh` | Mac 向けリンク展開スクリプト |
+| `home/.zshrc` | Mac 用 zsh 設定（Homebrew 前提。`cw` は `local-workspace` へ） |
+| `home/.zprofile` | Homebrew の shellenv 読み込み |
+| `Brewfile` | Homebrew パッケージ一覧 |
+| `config/ghostty/config` | Ghostty ターミナル設定 |
+
+### WSL 専用
+
+| ファイル | 説明 |
+| -------- | ---- |
+| `install.wsl.sh` | WSL 向けセットアップスクリプト（apt パッケージ導入 + リンク展開） |
+| `home/.zshrc.wsl` | WSL 用 zsh 設定（apt/mise 前提。`cw` は `local-workspace-win` へ） |
+
+> 注意: `install.sh`（Mac 用）を WSL で実行しないこと。`~/.zshrc` が Mac 用の `home/.zshrc` に張り替えられてしまう。WSL では必ず `install.wsl.sh` を使う。
 
 ## インストール済みツール
 
