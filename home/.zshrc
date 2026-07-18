@@ -70,3 +70,18 @@ function fzf-select-history() {
 }
 zle -N fzf-select-history
 bindkey '^R' fzf-select-history
+
+# --- 8. Dotfiles Drift Check ---
+# 週1回、バックグラウンドで dotfiles と実環境のドリフトを検出する
+# ドリフトがあれば起動時に警告を出す（対処は /dotfiles-drift-check スキル）
+() {
+  local dotfiles_dir="$HOME/ghq/github.com/mura123yasu/dotfiles"
+  local state_dir="$HOME/.local/state/dotfiles-drift"
+  [[ -f "$dotfiles_dir/scripts/drift-check.sh" ]] || return 0
+  if [[ ! -f "$state_dir/last-check" ]] || [[ -n "$(find "$state_dir/last-check" -mtime +6 2>/dev/null)" ]]; then
+    (zsh "$dotfiles_dir/scripts/drift-check.sh" --quiet &) >/dev/null 2>&1
+  fi
+  if [[ -s "$state_dir/report.txt" ]]; then
+    echo "⚠ dotfiles ドリフト検出: dotfiles リポジトリで /dotfiles-drift-check を実行してください（詳細: $state_dir/report.txt）"
+  fi
+}
