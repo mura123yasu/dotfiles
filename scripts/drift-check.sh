@@ -132,7 +132,11 @@ fi
 # =============================================================================
 for f in "$HOME/.claude/skills"/*(N); do
     if [[ -L "$f" ]]; then
-        [[ "$(readlink "$f")" == "$DOTFILES_DIR"/* ]] || add "CLAUDE | リポジトリ外を指すスキル: $f"
+        if [[ ! -e "$f" ]]; then
+            add "CLAUDE | リンク切れのスキル: $f。手動削除が必要"
+        elif [[ "$(readlink "$f")" != "$DOTFILES_DIR"/* ]]; then
+            add "CLAUDE | リポジトリ外を指すスキル: $f"
+        fi
     else
         add "CLAUDE | dotfiles 未管理のスキル: $f。リポジトリへの取り込み要否を判断すること"
     fi
