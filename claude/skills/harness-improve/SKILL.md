@@ -81,3 +81,9 @@ sources:
 - `harness/research-log.md` の先頭に今回のエントリを追記する（日付・確認した範囲・主な発見の要約・提案数と採否）
 - **main への直接 commit は禁止**。`feature/harness-improve-YYYYMMDD` ブランチで、提案ファイル・調査ログ・実装をまとめてコミットし、PR を作成する（起案ゼロならログ更新のみを `chore/harness-log-YYYYMMDD` で PR）
 - 最終報告: 主な発見、各提案の採否、PR の URL、ユーザーに残る作業（他端末でのリンク展開等）を簡潔にまとめる
+
+## Gotchas
+
+- `git add -A` はリポジトリ直下の `.bash_profile` で「can only add regular files」エラーになる。対象ファイルを明示して `git add` すること
+- `~/.claude/skills` へのリンク作成と `git push`（認証情報読み取り）はサンドボックスに拒否される。サンドボックス外で再実行すること
+- settings.json に新しい設定キーを追加する提案は、実装前に claude-code-guide エージェントで正確なキー名・値形式を確認すること

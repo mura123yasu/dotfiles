@@ -14,6 +14,11 @@
 - 小さな編集・通常の実装・会話 → main セッションで直接（委譲しない）
 - 設計判断・レビュー → 最上位モデル（fable、不可なら opus）
 
+## スキル運用（Gotchas の蓄積）
+
+- スキル実行中に失敗・詰まりを踏んだら、そのスキルの SKILL.md 末尾「## Gotchas」に1行追記し、同じ PR に含めること。
+- Gotchas は1件1行で簡潔に。解消・陳腐化したものは削除する（context 圧迫防止）。
+
 ## マルチリポジトリ統合管理
 
 - 全リポジトリの進捗・バックログは `~/ghq/github.com/mura123yasu/local-workspace`（Mac）/ `~/ghq/github.com/mura123yasu/local-workspace-win`（WSL）で統合管理している。
