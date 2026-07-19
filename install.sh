@@ -41,12 +41,10 @@ link "$DOTFILES_DIR/home/.tmux.conf" "$HOME/.tmux.conf"
 info "~/.config の設定をリンク中..."
 mkdir -p "$HOME/.config/ghostty"
 mkdir -p "$HOME/.config/git"
-mkdir -p "$HOME/.config/mise"
 
-link "$DOTFILES_DIR/config/starship.toml"     "$HOME/.config/starship.toml"
-link "$DOTFILES_DIR/config/ghostty/config"    "$HOME/.config/ghostty/config"
-link "$DOTFILES_DIR/config/git/ignore"        "$HOME/.config/git/ignore"
-link "$DOTFILES_DIR/config/mise/config.toml"  "$HOME/.config/mise/config.toml"
+link "$DOTFILES_DIR/config/starship.toml"  "$HOME/.config/starship.toml"
+link "$DOTFILES_DIR/config/ghostty/config" "$HOME/.config/ghostty/config"
+link "$DOTFILES_DIR/config/git/ignore"     "$HOME/.config/git/ignore"
 
 # ---- Claude Code 設定 ----
 info "Claude Code 設定をリンク中..."

@@ -149,6 +149,8 @@ zsh scripts/drift-check.sh
 
 シェル起動時に「⚠ dotfiles ドリフト検出」と表示されたら `/dotfiles-drift-check` を実行する。
 
+> 原則: ドリフト対応で変更するのは**実行した端末の OS 用ファイルのみ**（WSL なら install.wsl.sh 等、Mac なら install.sh / Brewfile 等）。他 OS 分は当該端末で `/dotfiles-drift-check` を実行して追従する。
+
 ## インストール済みツール
 
 | ツール  | 用途                          |
