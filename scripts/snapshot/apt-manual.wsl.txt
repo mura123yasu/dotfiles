@@ -38,8 +38,6 @@ login
 motd-news-config
 ncurses-base
 ncurses-bin
-nodejs
-npm
 patch
 peco
 python3.14
