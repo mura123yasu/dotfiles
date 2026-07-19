@@ -53,6 +53,7 @@ link "$DOTFILES_DIR/claude/settings.json"           "$HOME/.claude/settings.json
 link "$DOTFILES_DIR/claude/statusline-command.sh"   "$HOME/.claude/statusline-command.sh"
 link "$DOTFILES_DIR/claude/skills/github-push"            "$HOME/.claude/skills/github-push"
 link "$DOTFILES_DIR/claude/skills/dotfiles-drift-check"   "$HOME/.claude/skills/dotfiles-drift-check"
+link "$DOTFILES_DIR/claude/skills/harness-improve"        "$HOME/.claude/skills/harness-improve"
 link "$DOTFILES_DIR/claude/hooks"                   "$HOME/.claude/hooks"
 link "$DOTFILES_DIR/claude/rules"                   "$HOME/.claude/rules"
 link "$DOTFILES_DIR/claude/agents"                  "$HOME/.claude/agents"
