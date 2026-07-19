@@ -16,7 +16,6 @@ set -u
 
 DOTFILES_DIR="${0:A:h:h}"
 STATE_DIR="${DOTFILES_DRIFT_STATE_DIR:-$HOME/.local/state/dotfiles-drift}"
-REPORT="$STATE_DIR/report.txt"
 IGNORE_FILE="$DOTFILES_DIR/scripts/drift-ignore.txt"
 APT_BASELINE="$DOTFILES_DIR/scripts/snapshot/apt-manual.wsl.txt"
 
@@ -29,7 +28,11 @@ for arg in "$@"; do
     esac
 done
 
-mkdir -p "$STATE_DIR"
+# 状態ディレクトリに書けない環境（sandbox 実行等）では一時ディレクトリへフォールバック
+if ! mkdir -p "$STATE_DIR" 2>/dev/null || [[ ! -w "$STATE_DIR" ]]; then
+    STATE_DIR="$(mktemp -d)"
+fi
+REPORT="$STATE_DIR/report.txt"
 
 if [[ "$(uname)" == "Darwin" ]]; then
     OS=mac
