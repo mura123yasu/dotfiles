@@ -151,6 +151,32 @@ zsh scripts/drift-check.sh
 
 > 原則: ドリフト対応で変更するのは**実行した端末の OS 用ファイルのみ**（WSL なら install.wsl.sh 等、Mac なら install.sh / Brewfile 等）。他 OS 分は当該端末で `/dotfiles-drift-check` を実行して追従する。
 
+## ハーネス自己改善サイクル
+
+Claude Code のハーネス（`claude/` 配下と CLAUDE.md）を、公式アップデートや
+コミュニティのベストプラクティスに継続的に追従させる仕組み。詳細は `harness/README.md` を参照。
+
+### 構成
+
+| コンポーネント | 役割 |
+| -------------- | ---- |
+| `claude/agents/harness-researcher.md` | 調査エージェント。公式 CHANGELOG・ドキュメント・ブログ・コミュニティ知見を Web 調査 |
+| `claude/skills/harness-improve/` | `/harness-improve` スキル。調査 → 立案 → レビュー → 実装 → PR のサイクルを回す |
+| `harness/proposals/` | 拡張提案の記録（採用 / 却下 / 保留を frontmatter で管理。却下理由も残し再提案を防ぐ） |
+| `harness/research-log.md` | 調査ログ。前回の確認範囲を記録し、次回は差分だけ調査する |
+
+### 使い方
+
+```sh
+# Claude Code で（月1〜2回程度）
+/harness-improve
+
+# 調査だけしたい場合
+/harness-improve 調査のみ
+```
+
+提案の採否は必ずユーザーが判断する（勝手に実装はされない）。実装は PR 経由で main にマージする。
+
 ## インストール済みツール
 
 | ツール  | 用途                          |
