@@ -110,5 +110,6 @@
   "enabledPlugins": {},
   "effortLevel": "xhigh",
   "agentPushNotifEnabled": true,
-  "model": "claude-fable-5[1m]"
+  "model": "claude-fable-5[1m]",
+  "fallbackModel": ["claude-opus-4-8"]
 }
