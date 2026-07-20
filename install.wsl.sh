@@ -113,9 +113,13 @@ fi
 
 # ghq
 if ! has ghq; then
-    info "ghq をインストール中..."
-    GOBIN="$HOME/.local/bin" go install github.com/x-motemen/ghq@latest
-    success "ghq インストール完了"
+    if has go; then
+        info "ghq をインストール中..."
+        GOBIN="$HOME/.local/bin" go install github.com/x-motemen/ghq@latest
+        success "ghq インストール完了"
+    else
+        warn "go が見つからないため ghq のインストールをスキップ。go を導入して再実行するか、ghq バイナリを ~/.local/bin に配置すること"
+    fi
 fi
 
 # =============================================================================

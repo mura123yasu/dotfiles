@@ -6,6 +6,24 @@
 
 input=$(cat)
 
+# --- Persist rate-limit snapshot for autoloop usage gate ---
+# 公式の rate_limits (5h/週の used_percentage + resets_at) を時系列 JSONL に追記する。
+# autoloop (local-workspace-win/autoloop) がこのファイルを読んで GO/NOGO を判定する。
+rl_json=$(echo "$input" | jq -c '.rate_limits // empty' 2>/dev/null)
+if [ -n "$rl_json" ]; then
+  snap_file="$HOME/.claude/usage/rate-limits.jsonl"
+  mkdir -p "$HOME/.claude/usage"
+  now_epoch=$(date +%s)
+  last_ts=$(tail -n 1 "$snap_file" 2>/dev/null | jq -r '.ts // 0' 2>/dev/null)
+  case "$last_ts" in ''|*[!0-9]*) last_ts=0 ;; esac
+  if [ $((now_epoch - last_ts)) -ge 60 ]; then
+    printf '{"ts":%s,"rate_limits":%s}\n' "$now_epoch" "$rl_json" >> "$snap_file"
+    if [ "$(wc -l < "$snap_file")" -gt 20000 ]; then
+      tail -n 10000 "$snap_file" > "$snap_file.tmp" && mv "$snap_file.tmp" "$snap_file"
+    fi
+  fi
+fi
+
 # --- Extract fields ---
 cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // ""')
 model=$(echo "$input" | jq -r '.model.display_name // ""')

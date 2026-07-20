@@ -1,6 +1,5 @@
 {
   "permissions": {
-    "defaultMode": "auto",
     "allow": [
       "Bash(git checkout *)",
       "Bash(git add *)",
@@ -65,31 +64,13 @@
       "Bash(gh repo delete *)",
       "Bash(launchctl *)"
     ],
+    "defaultMode": "auto",
     "disableBypassPermissionsMode": "disable"
   },
-  "sandbox": {
-    "enabled": true,
-    "failIfUnavailable": false,
-    "filesystem": {
-      "denyRead": [
-        "~/.ssh",
-        "~/.aws",
-        "~/.config/gh"
-      ]
-    },
-    "network": {
-      "allowedDomains": [
-        "api.anthropic.com",
-        "*.anthropic.com",
-        "*.claude.com",
-        "github.com",
-        "*.github.com",
-        "*.githubusercontent.com",
-        "registry.npmjs.org",
-        "registry.yarnpkg.com"
-      ]
-    }
-  },
+  "model": "claude-fable-5[1m]",
+  "fallbackModel": [
+    "claude-opus-4-8"
+  ],
   "hooks": {
     "PreToolUse": [
       {
@@ -108,8 +89,29 @@
     "command": "bash ~/.claude/statusline-command.sh"
   },
   "enabledPlugins": {},
+  "sandbox": {
+    "enabled": true,
+    "failIfUnavailable": false,
+    "network": {
+      "allowedDomains": [
+        "api.anthropic.com",
+        "*.anthropic.com",
+        "*.claude.com",
+        "github.com",
+        "*.github.com",
+        "*.githubusercontent.com",
+        "registry.npmjs.org",
+        "registry.yarnpkg.com"
+      ]
+    },
+    "filesystem": {
+      "denyRead": [
+        "~/.ssh",
+        "~/.aws",
+        "~/.config/gh"
+      ]
+    }
+  },
   "effortLevel": "xhigh",
-  "agentPushNotifEnabled": true,
-  "model": "claude-fable-5[1m]",
-  "fallbackModel": ["claude-opus-4-8"]
+  "agentPushNotifEnabled": true
 }
