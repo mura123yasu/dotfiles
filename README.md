@@ -98,7 +98,7 @@ Mac と WSL で無理に設定ファイルを共用せず、差分が出るも�
 | `claude/settings.json` | `~/.claude/settings.json` | Claude Code グローバル設定（permissions / sandbox / hooks 等）。macOS 専用の deny ルール（`pbcopy` 等）は WSL では発火しないだけで無害 |
 | `claude/statusline-command.sh` | `~/.claude/statusline-command.sh` | ステータスライン表示スクリプト |
 | `claude/skills/` | `~/.claude/skills/` 以下 | Claude Code スキル |
-| `claude/hooks/` | `~/.claude/hooks` | PreToolUse ガードフック |
+| `claude/hooks/` | `~/.claude/hooks` | フック群。`guard.sh`（PreToolUse ガード）/ `notify.sh`（Notification・Stop の通知音。OS 判定で WSL は powershell.exe、Mac は afplay） |
 | `claude/rules/` | `~/.claude/rules` | モデルルーティング等のルール |
 | `claude/agents/` | `~/.claude/agents` | カスタムエージェント定義 |
 | `CLAUDE.md` | （リポジトリ直下） | Claude Code 向けグローバルルール |
@@ -176,6 +176,28 @@ Claude Code のハーネス（`claude/` 配下と CLAUDE.md）を、公式アッ
 ```
 
 提案の採否は必ずユーザーが判断する（勝手に実装はされない）。実装は PR 経由で main にマージする。
+
+## Claude Code の通知音
+
+「ユーザーの確認待ち」と「タスク完了」を音で知らせる仕組み。`claude/hooks/notify.sh` が
+`claude/settings.json` の Notification / Stop フックから呼ばれる。
+
+| イベント | タイミング | WSL の音 | Mac の音 |
+| -------- | ---------- | -------- | -------- |
+| `Notification` | 権限確認プロンプト表示時 / 60秒アイドルの入力待ち | `C:\Windows\Media\notify.wav` | `Funk.aiff` |
+| `Stop` | 応答完了（タスク完了） | `C:\Windows\Media\chimes.wav` | `Glass.aiff` |
+
+再生手段は OS で自動分岐する（WSL: `powershell.exe` + `SoundPlayer` / Mac: `afplay`）。
+どちらも使えない環境ではターミナルベル（`\a`）にフォールバックする。
+再生はバックグラウンドに投げるためセッションはブロックされない。
+
+音を変えたい場合は `notify.sh` の `wav_name` / `mac_sound` を編集する
+（WSL の音源候補は `/mnt/c/Windows/Media/` にある `notify.wav` `chimes.wav` `ding.wav` `chord.wav` `tada.wav` など）。
+Stop の音が煩わしい場合は `claude/settings.json` の `hooks.Stop` を外す。
+
+> 補足: Mac では Claude Code 標準の OS 通知（`preferredNotifChannel` の既定値 `auto` が Ghostty を検出）も併用される。
+> WSL の Windows Terminal 向けには組み込みの通知チャネルが `terminal_bell` しかなく、
+> かつ `settings.json` は両 OS 共用のため、`preferredNotifChannel` は既定のまま触らずフックで対応している。
 
 ## インストール済みツール
 
