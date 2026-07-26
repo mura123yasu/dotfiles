@@ -58,5 +58,11 @@ link "$DOTFILES_DIR/claude/hooks"                   "$HOME/.claude/hooks"
 link "$DOTFILES_DIR/claude/rules"                   "$HOME/.claude/rules"
 link "$DOTFILES_DIR/claude/agents"                  "$HOME/.claude/agents"
 
+# ---- git フィルタ設定 ----
+# settings.json は Claude Code の書き換えでキー順が変わるため、比較時に jq で正規化する
+info "git フィルタ (sortjson) を設定中..."
+git -C "$DOTFILES_DIR" config filter.sortjson.clean 'jq --sort-keys .'
+success "sortjson フィルタ設定完了"
+
 echo ""
 info "完了。ターミナルを再起動してください。"
