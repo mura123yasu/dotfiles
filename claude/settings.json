@@ -1,6 +1,45 @@
 {
+  "agentPushNotifEnabled": true,
+  "effortLevel": "xhigh",
+  "enabledPlugins": {},
+  "fallbackModel": [
+    "claude-opus-4-8"
+  ],
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "command": "bash ~/.claude/hooks/notify.sh",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "bash ~/.claude/hooks/guard.sh",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "bash ~/.claude/hooks/notify.sh",
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  },
+  "model": "claude-fable-5[1m]",
   "permissions": {
-    "defaultMode": "auto",
     "allow": [
       "Bash(git checkout *)",
       "Bash(git add *)",
@@ -8,6 +47,12 @@
       "Bash(git push *)",
       "Bash(chmod +x *)"
     ],
+    "ask": [
+      "Bash(gh pr merge *)",
+      "Bash(gh repo delete *)",
+      "Bash(launchctl *)"
+    ],
+    "defaultMode": "auto",
     "deny": [
       "Bash(rm *)",
       "Bash(rm -r *)",
@@ -60,11 +105,6 @@
       "Edit(~/.zshrc)",
       "Edit(~/.bashrc)"
     ],
-    "ask": [
-      "Bash(gh pr merge *)",
-      "Bash(gh repo delete *)",
-      "Bash(launchctl *)"
-    ],
     "disableBypassPermissionsMode": "disable"
   },
   "sandbox": {
@@ -90,26 +130,8 @@
       ]
     }
   },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/guard.sh"
-          }
-        ]
-      }
-    ]
-  },
   "statusLine": {
-    "type": "command",
-    "command": "bash ~/.claude/statusline-command.sh"
-  },
-  "enabledPlugins": {},
-  "effortLevel": "xhigh",
-  "agentPushNotifEnabled": true,
-  "model": "claude-fable-5[1m]",
-  "fallbackModel": ["claude-opus-4-8"]
+    "command": "bash ~/.claude/statusline-command.sh",
+    "type": "command"
+  }
 }
