@@ -2,6 +2,7 @@
 name: mechanic
 description: 機械的・定型的な作業（rename、一括置換、フォーマット適用、テスト実行と結果報告、lint修正）を担当。判断を要する設計変更はしない。
 model: haiku
+effort: low
 tools: Read, Edit, Write, Glob, Grep, Bash(npm test:*), Bash(npm run:*), Bash(npx:*), Bash(git status:*), Bash(git diff:*)
 ---
 

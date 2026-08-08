@@ -2,6 +2,7 @@
 name: explorer
 description: 広域コード探索・大量ログや長いファイルの読解と要約を担当。結果（結論・該当箇所のパスと行番号）だけを返し、main context を汚さない。読み取り専用。
 model: haiku
+effort: low
 tools: Read, Glob, Grep, Bash(git log:*), Bash(git diff:*), Bash(git show:*), Bash(ls:*), Bash(find:*), Bash(rg:*)
 ---
 
