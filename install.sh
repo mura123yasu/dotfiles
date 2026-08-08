@@ -41,10 +41,12 @@ link "$DOTFILES_DIR/home/.tmux.conf" "$HOME/.tmux.conf"
 info "~/.config の設定をリンク中..."
 mkdir -p "$HOME/.config/ghostty"
 mkdir -p "$HOME/.config/git"
+mkdir -p "$HOME/.config/mise"
 
-link "$DOTFILES_DIR/config/starship.toml"  "$HOME/.config/starship.toml"
-link "$DOTFILES_DIR/config/ghostty/config" "$HOME/.config/ghostty/config"
-link "$DOTFILES_DIR/config/git/ignore"     "$HOME/.config/git/ignore"
+link "$DOTFILES_DIR/config/starship.toml"     "$HOME/.config/starship.toml"
+link "$DOTFILES_DIR/config/ghostty/config"    "$HOME/.config/ghostty/config"
+link "$DOTFILES_DIR/config/git/ignore"        "$HOME/.config/git/ignore"
+link "$DOTFILES_DIR/config/mise/config.toml"  "$HOME/.config/mise/config.toml"
 
 # ---- Claude Code 設定 ----
 info "Claude Code 設定をリンク中..."
@@ -57,6 +59,12 @@ link "$DOTFILES_DIR/claude/skills/harness-improve"        "$HOME/.claude/skills/
 link "$DOTFILES_DIR/claude/hooks"                   "$HOME/.claude/hooks"
 link "$DOTFILES_DIR/claude/rules"                   "$HOME/.claude/rules"
 link "$DOTFILES_DIR/claude/agents"                  "$HOME/.claude/agents"
+
+# ---- git グローバル設定 ----
+# config/git/ignore はリンクを張るだけでは効かない。Git に使わせる設定が別途必要。
+info "グローバル gitignore を有効化中..."
+git config --global core.excludesFile "$HOME/.config/git/ignore"
+success "core.excludesFile 設定完了"
 
 # ---- git フィルタ設定 ----
 # settings.json は Claude Code の書き換えでキー順が変わるため、比較時に jq で正規化する
