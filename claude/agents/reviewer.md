@@ -1,6 +1,6 @@
 ---
 name: reviewer
-description: コードレビュー担当。正当性バグ・セキュリティ問題・設計上の懸念を、修正は行わずに指摘する。設計判断を伴うため最上位モデルで動かす（model指定なし＝セッションモデルを継承。通常 fable/opus）。
+description: コードレビュー担当。正当性バグ・セキュリティ問題・設計上の懸念を、修正は行わずに指摘する。model 指定なし＝セッションモデル（推奨モデル。通常 Opus）を継承する。設計そのものの妥当性を問う必要がある場合は strategist（Fable）を使う。
 tools: Read, Glob, Grep, Bash(git log:*), Bash(git diff:*), Bash(git show:*)
 ---
 
