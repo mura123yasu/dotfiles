@@ -1,0 +1,4 @@
+# drift-check.sh の検出結果から除外するパターン（1行1パターン、部分一致）
+# 「環境固有で dotfiles 管理しない」と判断した項目をここに追記する。
+# 例:
+#   未管理のスキル: /home/mura123yasu/.claude/skills/local-only.md

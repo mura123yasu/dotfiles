@@ -1,4 +1,44 @@
 {
+  "agentPushNotifEnabled": true,
+  "effortLevel": "xhigh",
+  "enabledPlugins": {},
+  "fallbackModel": [
+    "claude-opus-4-8"
+  ],
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "command": "bash ~/.claude/hooks/notify.sh",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "command": "bash ~/.claude/hooks/guard.sh",
+            "type": "command"
+          }
+        ],
+        "matcher": "Bash"
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "bash ~/.claude/hooks/notify.sh",
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  },
+  "model": "claude-fable-5[1m]",
   "permissions": {
     "allow": [
       "Bash(git checkout *)",
@@ -7,6 +47,12 @@
       "Bash(git push *)",
       "Bash(chmod +x *)"
     ],
+    "ask": [
+      "Bash(gh pr merge *)",
+      "Bash(gh repo delete *)",
+      "Bash(launchctl *)"
+    ],
+    "defaultMode": "auto",
     "deny": [
       "Bash(rm *)",
       "Bash(rm -r *)",

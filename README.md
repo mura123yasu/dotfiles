@@ -82,14 +82,122 @@ ln -sf ~/ghq/github.com/mura123yasu/dotfiles/.claude/settings.json ~/.claude/set
 ln -sf ~/ghq/github.com/mura123yasu/dotfiles/.claude/statusline-command.sh ~/.claude/statusline-command.sh
 ```
 
-## dotfiles の構成
+## ファイル管理方針（共用 / OS 別）
 
-| ファイル   | 説明                                |
-| ---------- | ----------------------------------- |
-| `.zshrc`   | zsh の設定（ghq + fzf の統合など）  |
-| `Brewfile` | Homebrew でインストールするパッケージ一覧 |
-| `.claude/settings.json` | Claude Code のグローバル設定（ステータスライン等） |
-| `.claude/statusline-command.sh` | ステータスライン表示スクリプト |
+Mac と WSL で無理に設定ファイルを共用せず、差分が出るものは OS 別ファイルに切り出して管理する。
+**新しいファイルを追加・変更したら、必ずこの表を更新すること。**
+
+### 両 OS で共用
+
+| ファイル | リンク先 | 説明 |
+| -------- | -------- | ---- |
+| `home/.tmux.conf` | `~/.tmux.conf` | tmux 設定 |
+| `config/starship.toml` | `~/.config/starship.toml` | プロンプト設定 |
+| `config/git/ignore` | `~/.config/git/ignore` | グローバル gitignore |
+| `config/mise/config.toml` | `~/.config/mise/config.toml` | mise グローバルツール設定（node 等） |
+| `claude/settings.json` | `~/.claude/settings.json` | Claude Code グローバル設定（permissions / sandbox / hooks 等）。macOS 専用の deny ルール（`pbcopy` 等）は WSL では発火しないだけで無害 |
+| `claude/statusline-command.sh` | `~/.claude/statusline-command.sh` | ステータスライン表示スクリプト |
+| `claude/skills/` | `~/.claude/skills/` 以下 | Claude Code スキル |
+| `claude/hooks/` | `~/.claude/hooks` | フック群。`guard.sh`（PreToolUse ガード）/ `notify.sh`（Notification・Stop の通知音。OS 判定で WSL は powershell.exe、Mac は afplay） |
+| `claude/rules/` | `~/.claude/rules` | モデルルーティング等のルール |
+| `claude/agents/` | `~/.claude/agents` | カスタムエージェント定義 |
+| `CLAUDE.md` | （リポジトリ直下） | Claude Code 向けグローバルルール |
+
+### Mac 専用
+
+| ファイル | 説明 |
+| -------- | ---- |
+| `install.sh` | Mac 向けリンク展開スクリプト |
+| `home/.zshrc` | Mac 用 zsh 設定（Homebrew 前提。`cw` は `local-workspace` へ） |
+| `home/.zprofile` | Homebrew の shellenv 読み込み |
+| `Brewfile` | Homebrew パッケージ一覧 |
+| `config/ghostty/config` | Ghostty ターミナル設定 |
+
+### WSL 専用
+
+| ファイル | 説明 |
+| -------- | ---- |
+| `install.wsl.sh` | WSL 向けセットアップスクリプト（apt パッケージ導入 + リンク展開） |
+| `home/.zshrc.wsl` | WSL 用 zsh 設定（apt/mise 前提。`cw` は `local-workspace-win` へ） |
+
+> 注意: `install.sh`（Mac 用）を WSL で実行しないこと。`~/.zshrc` が Mac 用の `home/.zshrc` に張り替えられてしまう。WSL では必ず `install.wsl.sh` を使う。
+
+## ドリフト検出（定期チェック機構）
+
+実環境（インストール済みパッケージ・シンボリックリンク・`~/.claude` 配下）が
+このリポジトリの管理内容から乖離していないかを定期的に検出する仕組み。
+
+### 構成
+
+| コンポーネント | 役割 |
+| -------------- | ---- |
+| `scripts/drift-check.sh` | 決定的なドリフト検出。リンク健全性 / パッケージ差分（WSL: apt ベースライン比較、Mac: Brewfile 比較）/ `~/.claude/skills` の未管理ファイルを検出し、`~/.local/state/dotfiles-drift/report.txt` に出力 |
+| `scripts/snapshot/apt-manual.wsl.txt` | apt 手動インストールパッケージのベースライン（WSL）。`--update-baseline` で再生成 |
+| `scripts/drift-ignore.txt` | 環境固有として無視するパターンのリスト |
+| `.zshrc` の起動フック | 週1回バックグラウンドで自動チェックし、ドリフトがあれば起動時に警告 |
+| `/dotfiles-drift-check` スキル | 検出結果を分類し、要変更ならリポジトリを更新して PR を作成（Claude Code） |
+
+### 使い方
+
+```sh
+# 手動チェック
+zsh scripts/drift-check.sh
+
+# 対処（Claude Code で。分類・リポジトリ更新・PR 作成まで行う）
+/dotfiles-drift-check
+```
+
+シェル起動時に「⚠ dotfiles ドリフト検出」と表示されたら `/dotfiles-drift-check` を実行する。
+
+> 原則: ドリフト対応で変更するのは**実行した端末の OS 用ファイルのみ**（WSL なら install.wsl.sh 等、Mac なら install.sh / Brewfile 等）。他 OS 分は当該端末で `/dotfiles-drift-check` を実行して追従する。
+
+## ハーネス自己改善サイクル
+
+Claude Code のハーネス（`claude/` 配下と CLAUDE.md）を、公式アップデートや
+コミュニティのベストプラクティスに継続的に追従させる仕組み。詳細は `harness/README.md` を参照。
+
+### 構成
+
+| コンポーネント | 役割 |
+| -------------- | ---- |
+| `claude/agents/harness-researcher.md` | 調査エージェント。公式 CHANGELOG・ドキュメント・ブログ・コミュニティ知見を Web 調査 |
+| `claude/skills/harness-improve/` | `/harness-improve` スキル。調査 → 立案 → レビュー → 実装 → PR のサイクルを回す |
+| `harness/proposals/` | 拡張提案の記録（採用 / 却下 / 保留を frontmatter で管理。却下理由も残し再提案を防ぐ） |
+| `harness/research-log.md` | 調査ログ。前回の確認範囲を記録し、次回は差分だけ調査する |
+
+### 使い方
+
+```sh
+# Claude Code で（月1〜2回程度）
+/harness-improve
+
+# 調査だけしたい場合
+/harness-improve 調査のみ
+```
+
+提案の採否は必ずユーザーが判断する（勝手に実装はされない）。実装は PR 経由で main にマージする。
+
+## Claude Code の通知音
+
+「ユーザーの確認待ち」と「タスク完了」を音で知らせる仕組み。`claude/hooks/notify.sh` が
+`claude/settings.json` の Notification / Stop フックから呼ばれる。
+
+| イベント | タイミング | WSL の音 | Mac の音 |
+| -------- | ---------- | -------- | -------- |
+| `Notification` | 権限確認プロンプト表示時 / 60秒アイドルの入力待ち | `C:\Windows\Media\notify.wav` | `Funk.aiff` |
+| `Stop` | 応答完了（タスク完了） | `C:\Windows\Media\chimes.wav` | `Glass.aiff` |
+
+再生手段は OS で自動分岐する（WSL: `powershell.exe` + `SoundPlayer` / Mac: `afplay`）。
+どちらも使えない環境ではターミナルベル（`\a`）にフォールバックする。
+再生はバックグラウンドに投げるためセッションはブロックされない。
+
+音を変えたい場合は `notify.sh` の `wav_name` / `mac_sound` を編集する
+（WSL の音源候補は `/mnt/c/Windows/Media/` にある `notify.wav` `chimes.wav` `ding.wav` `chord.wav` `tada.wav` など）。
+Stop の音が煩わしい場合は `claude/settings.json` の `hooks.Stop` を外す。
+
+> 補足: Mac では Claude Code 標準の OS 通知（`preferredNotifChannel` の既定値 `auto` が Ghostty を検出）も併用される。
+> WSL の Windows Terminal 向けには組み込みの通知チャネルが `terminal_bell` しかなく、
+> かつ `settings.json` は両 OS 共用のため、`preferredNotifChannel` は既定のまま触らずフックで対応している。
 
 ## インストール済みツール
 

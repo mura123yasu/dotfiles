@@ -19,7 +19,12 @@
   同じ失敗を2回繰り返したとき → 確認を取らずに `strategist`(fable) へ委譲する。**
   指示が短くても、難易度が高ければ現状モデルのまま押し切らないこと。
 
+## スキル運用（Gotchas の蓄積）
+
+- スキル実行中に失敗・詰まりを踏んだら、そのスキルの SKILL.md 末尾「## Gotchas」に1行追記し、同じ PR に含めること。
+- Gotchas は1件1行で簡潔に。解消・陳腐化したものは削除する（context 圧迫防止）。
+
 ## マルチリポジトリ統合管理
 
-- 全リポジトリの進捗・バックログは `~/ghq/github.com/mura123yasu/local-workspace` で統合管理している。
+- 全リポジトリの進捗・バックログは `~/ghq/github.com/mura123yasu/local-workspace`（Mac）/ `~/ghq/github.com/mura123yasu/local-workspace-win`（WSL）で統合管理している。
 - 「次何すればいい？」と聞かれたら local-workspace の `/next` スキルとバックログを参照すること。

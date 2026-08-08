@@ -38,3 +38,8 @@ Based on the changes above, do all of the following in a single message:
 6. **Create a GitHub PR**: `gh pr create --fill`
 
 Do not ask for confirmation. Execute all steps in a single message using parallel tool calls where possible.
+
+## Gotchas
+
+- In the dotfiles repo, `git add -A` / `git add .` fails on `.bash_profile` with "can only add regular files". Stage the changed files explicitly instead
+- `git push` fails inside the sandbox with "could not read Username" (credentials are blocked). Re-run outside the sandbox

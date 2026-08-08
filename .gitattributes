@@ -1,0 +1,3 @@
+# Claude Code が書き換えるたびにキー順が変わるため、git 比較時に jq で正規化する。
+# フィルタ本体は install.sh / install.wsl.sh が `git config filter.sortjson.clean` で設定する。
+claude/settings.json filter=sortjson
