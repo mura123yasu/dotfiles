@@ -44,3 +44,9 @@ SubagentStop フックを追加し、カスタムサブエージェント（revi
   最終報告本文そのもの）が存在することを確認した。`transcript_path` のパースは不要で、
   `agent_id` / `agent_type`（frontmatter の `name`）も取得可能。実装時の技術的な不確実性は
   なくなったため、次回サイクルでのレビュー対象として引き続き提案する（実装はフェーズ4のため今回は未実施）
+- 2026-08-08: 保留を継続（status: proposed のまま）。技術的前提は公式ドキュメントで再確認済み
+  （SubagentStop の入力 JSON に `last_assistant_message` / `agent_id` / `agent_type` が存在し、
+  matcher はエージェント種別で絞れる。`hookSpecificOutput.additionalContext` で非ブロックの
+  フィードバックを返せる）。実装可能だが、同サイクルで他2件を先に入れる判断となったため見送り。
+  次回サイクルで再提示する。実装する場合は additionalContext による警告のみとし、
+  `decision: block` は使わない方針（正当な「発見なし」報告を弾いてループする risk を避ける）。
