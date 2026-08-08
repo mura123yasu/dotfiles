@@ -38,7 +38,7 @@
       }
     ]
   },
-  "model": "claude-fable-5[1m]",
+  "model": "default",
   "permissions": {
     "allow": [
       "Bash(git checkout *)",
@@ -132,6 +132,7 @@
   },
   "statusLine": {
     "command": "bash ~/.claude/statusline-command.sh",
+    "refreshInterval": 30,
     "type": "command"
   }
 }

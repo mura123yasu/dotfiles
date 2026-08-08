@@ -1,29 +1,38 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Claude Code status line — mirrors Starship prompt style
 # Colors from starship.toml: #3B4252 (dir bg), #5E81AC (git bg), #E5E9F0 (dir fg), #ECEFF4 (git fg)
-# Segment layout (when in a git repo):
+# Segment layout:
 #   [Dir] [Branch[*]] [Context %] [Session %] [Model (effort)] [Time]
+#
+# Segments are packed into as many rows as needed to fit $COLUMNS, so nothing
+# is clipped on narrow terminals. Claude Code renders each printed line as its
+# own status row and exports COLUMNS/LINES before running this script
+# (requires Claude Code v2.1.153+).
+
+# ${#var} counts characters only under a UTF-8 locale; force one if absent so
+# multibyte paths/branches don't blow up the width math.
+case "${LC_ALL:-${LC_CTYPE:-${LANG:-}}}" in
+  *UTF-8*|*utf-8*|*utf8*) ;;
+  *) export LC_ALL=en_US.UTF-8 ;;
+esac
 
 input=$(cat)
 
 # --- Extract fields ---
 cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // ""')
 model=$(echo "$input" | jq -r '.model.display_name // ""')
-git_worktree=$(echo "$input" | jq -r '.workspace.git_worktree // empty' 2>/dev/null)
 used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
 session_pct=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
 session_resets_at=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
 current_time=$(date +%H:%M)
 
-# --- Effort level: try status JSON first, then fall back to settings.json ---
-effort_raw=$(echo "$input" | jq -r '(.effortLevel // .thinking.effort // .effort // empty) | if type == "object" then .level else . end' 2>/dev/null)
+# --- Effort level: .effort.level is the live session value (survives /effort) ---
+effort_raw=$(echo "$input" | jq -r '(.effort.level // .effortLevel // .thinking.effort // empty)' 2>/dev/null)
 if [ -z "$effort_raw" ] && [ -f "$HOME/.claude/settings.json" ]; then
   effort_raw=$(jq -r '.effortLevel // empty' "$HOME/.claude/settings.json" 2>/dev/null)
 fi
 # absent = auto
-if [ -z "$effort_raw" ]; then
-  effort_raw="auto"
-fi
+[ -z "$effort_raw" ] && effort_raw="auto"
 effort_label=" [${effort_raw}]"
 
 # --- Directory (truncate to 3 path components, like starship) ---
@@ -40,7 +49,7 @@ fi
 
 # --- Git branch ---
 git_branch=""
-if git_dir=$(git -C "$cwd" rev-parse --git-dir 2>/dev/null); then
+if git -C "$cwd" rev-parse --git-dir >/dev/null 2>&1; then
   git_branch=$(git -C "$cwd" symbolic-ref --short HEAD 2>/dev/null || git -C "$cwd" rev-parse --short HEAD 2>/dev/null)
 fi
 
@@ -86,85 +95,127 @@ make_bar() {
   printf "%s" "$bar"
 }
 
-# --- ANSI truecolor segment colors (Nord + Catppuccin) ---
-DIR_BG="\033[48;2;59;66;82m"       # #3B4252
-DIR_FG="\033[38;2;229;233;240m"    # #E5E9F0
-GIT_BG="\033[48;2;94;129;172m"     # #5E81AC
-GIT_FG="\033[38;2;236;239;244m"    # #ECEFF4
-CTX_BG="\033[48;2;163;190;140m"    # #A3BE8C
-CTX_FG="\033[38;2;35;38;46m"
-SES_BG="\033[48;2;235;203;139m"    # #EBCB8B
-SES_FG="\033[38;2;35;38;46m"
-MODEL_BG="\033[48;2;137;180;250m"  # #89B4FA
-MODEL_FG="\033[38;2;30;30;46m"
-TIME_BG="\033[48;2;180;142;173m"   # #B48EAD
-TIME_FG="\033[38;2;35;38;46m"
-
-SEP_DIR_GIT_FG="\033[38;2;59;66;82m"
-SEP_GIT_CTX_FG="\033[38;2;94;129;172m"
-SEP_CTX_SES_FG="\033[38;2;163;190;140m"
-SEP_SES_MODEL_FG="\033[38;2;235;203;139m"
-SEP_MODEL_TIME_FG="\033[38;2;137;180;250m"
-SEP_TIME_END_FG="\033[38;2;180;142;173m"
-SEP_DIR_CTX_FG="\033[38;2;59;66;82m"
+# --- Segment palette (Nord + Catppuccin), as "R;G;B" triples ---
+RGB_DIR_BG="59;66;82"       # #3B4252
+RGB_DIR_FG="229;233;240"    # #E5E9F0
+RGB_GIT_BG="94;129;172"     # #5E81AC
+RGB_GIT_FG="236;239;244"    # #ECEFF4
+RGB_CTX_BG="163;190;140"    # #A3BE8C
+RGB_SES_BG="235;203;139"    # #EBCB8B
+RGB_MODEL_BG="137;180;250"  # #89B4FA
+RGB_TIME_BG="180;142;173"   # #B48EAD
+RGB_DARK_FG="35;38;46"
+RGB_MODEL_FG="30;30;46"
 
 RESET="\033[0m"
 
-line=""
+# --- Display width of user-supplied text (paths, branch names) ---
+# Codepoint inspection is unreliable on bash 3.2, so approximate instead:
+# every extra UTF-8 byte beyond the character count means one continuation
+# byte, and CJK/kana/fullwidth characters (3 bytes, 2 cells) dominate here.
+# Over-estimating only causes an earlier wrap, which is the safe direction.
+disp_width() {
+  local s="$1" chars bytes
+  chars=${#s}
+  bytes=$(printf '%s' "$s" | wc -c)
+  bytes=${bytes//[^0-9]/}
+  echo $(( chars + (bytes - chars) / 2 ))
+}
 
-# Directory segment
-line="${line}${DIR_BG}${DIR_FG} ${dir_display} ${RESET}"
+# --- Collect segments ---
+seg_text=()
+seg_bg=()
+seg_fg=()
+seg_w=()
+# add_seg <text> <bg> <fg> [display_width]
+# Width defaults to the character count, which is exact for the ASCII and
+# box-drawing text this script generates itself.
+add_seg() {
+  seg_text+=("$1")
+  seg_bg+=("$2")
+  seg_fg+=("$3")
+  seg_w+=("${4:-${#1}}")
+}
+
+add_seg "$dir_display" "$RGB_DIR_BG" "$RGB_DIR_FG" "$(disp_width "$dir_display")"
 
 if [ -n "$git_branch" ]; then
-  line="${line}${GIT_BG}${SEP_DIR_GIT_FG}${RESET}${GIT_BG}${GIT_FG} ${git_branch}${git_dirty} ${RESET}"
-
-  if [ -n "$used_pct" ]; then
-    used_int=$(printf "%.0f" "$used_pct")
-    ctx_bar=$(make_bar "$used_pct")
-    ctx_display="${used_int}%ctx ${ctx_bar}"
-  else
-    ctx_display="ctx ░░░░░░░░░░"
-  fi
-  line="${line}${CTX_BG}${SEP_GIT_CTX_FG}${RESET}${CTX_BG}${CTX_FG} ${ctx_display} ${RESET}"
-
-  if [ -n "$session_pct" ]; then
-    session_int=$(printf "%.0f" "$session_pct")
-    session_bar=$(make_bar "$session_pct")
-    reset_label=$(make_reset_label "$session_resets_at")
-    ses_display="${session_int}%ses ${session_bar}${reset_label}"
-  else
-    ses_display="ses ░░░░░░░░░░"
-  fi
-  line="${line}${SES_BG}${SEP_CTX_SES_FG}${RESET}${SES_BG}${SES_FG} ${ses_display} ${RESET}"
-
-  line="${line}${MODEL_BG}${SEP_SES_MODEL_FG}${RESET}${MODEL_BG}${MODEL_FG} ${model}${effort_label} ${RESET}"
-  line="${line}${TIME_BG}${SEP_MODEL_TIME_FG}${RESET}${TIME_BG}${TIME_FG} ${current_time} ${RESET}"
-  line="${line}${SEP_TIME_END_FG}${RESET}"
-
-else
-  # No git repo
-  if [ -n "$used_pct" ]; then
-    used_int=$(printf "%.0f" "$used_pct")
-    ctx_bar=$(make_bar "$used_pct")
-    ctx_display="${used_int}%ctx ${ctx_bar}"
-  else
-    ctx_display="ctx ░░░░░░░░░░"
-  fi
-  line="${line}${CTX_BG}${SEP_DIR_CTX_FG}${RESET}${CTX_BG}${CTX_FG} ${ctx_display} ${RESET}"
-
-  if [ -n "$session_pct" ]; then
-    session_int=$(printf "%.0f" "$session_pct")
-    session_bar=$(make_bar "$session_pct")
-    reset_label=$(make_reset_label "$session_resets_at")
-    ses_display="${session_int}%ses ${session_bar}${reset_label}"
-  else
-    ses_display="ses ░░░░░░░░░░"
-  fi
-  line="${line}${SES_BG}${SEP_CTX_SES_FG}${RESET}${SES_BG}${SES_FG} ${ses_display} ${RESET}"
-
-  line="${line}${MODEL_BG}${SEP_SES_MODEL_FG}${RESET}${MODEL_BG}${MODEL_FG} ${model}${effort_label} ${RESET}"
-  line="${line}${TIME_BG}${SEP_MODEL_TIME_FG}${RESET}${TIME_BG}${TIME_FG} ${current_time} ${RESET}"
-  line="${line}${SEP_TIME_END_FG}${RESET}"
+  branch_display="${git_branch}${git_dirty}"
+  add_seg "$branch_display" "$RGB_GIT_BG" "$RGB_GIT_FG" "$(disp_width "$branch_display")"
 fi
 
-printf "%b" "$line"
+if [ -n "$used_pct" ]; then
+  ctx_display="$(printf "%.0f" "$used_pct")%ctx $(make_bar "$used_pct")"
+else
+  ctx_display="ctx ░░░░░░░░░░"
+fi
+add_seg "$ctx_display" "$RGB_CTX_BG" "$RGB_DARK_FG"
+
+if [ -n "$session_pct" ]; then
+  ses_display="$(printf "%.0f" "$session_pct")%ses $(make_bar "$session_pct")$(make_reset_label "$session_resets_at")"
+else
+  ses_display="ses ░░░░░░░░░░"
+fi
+add_seg "$ses_display" "$RGB_SES_BG" "$RGB_DARK_FG"
+
+add_seg "${model}${effort_label}" "$RGB_MODEL_BG" "$RGB_MODEL_FG"
+add_seg "$current_time" "$RGB_TIME_BG" "$RGB_DARK_FG"
+
+# --- Pack segments into rows that fit the terminal ---
+# Width per segment: 1 leading separator (except first in row) + space + text + space.
+# Each row also ends with 1 trailing separator .
+cols=${COLUMNS:-80}
+case "$cols" in
+  ''|*[!0-9]*) cols=80 ;;
+esac
+[ "$cols" -lt 20 ] && cols=80
+
+row=""          # accumulated escape sequences for the current row
+row_used=0      # visible width consumed by the current row
+prev_bg=""      # bg of the previous segment, used to draw the separator
+
+flush_row() {
+  [ -z "$row" ] && return
+  printf "%b\n" "${row}\033[38;2;${prev_bg}m${RESET}"
+  row=""
+  row_used=0
+  prev_bg=""
+}
+
+for i in "${!seg_text[@]}"; do
+  text="${seg_text[$i]}"
+  bg="${seg_bg[$i]}"
+  fg="${seg_fg[$i]}"
+  tw="${seg_w[$i]}"
+
+  width=$(( tw + 2 ))
+  [ -n "$row" ] && width=$(( width + 1 ))
+
+  # Wrap when this segment plus the row's trailing separator would overflow.
+  if [ -n "$row" ] && [ $(( row_used + width + 1 )) -gt "$cols" ]; then
+    flush_row
+    width=$(( tw + 2 ))
+  fi
+
+  # Last resort: a segment wider than an entire row gets an ellipsis so the
+  # row still ends with its separator instead of being cut mid-escape.
+  if [ $(( width + 1 )) -gt "$cols" ]; then
+    keep_cells=$(( cols - 4 ))
+    [ "$keep_cells" -lt 1 ] && keep_cells=1
+    # Scale cells back to characters when the text is wider than 1 cell/char.
+    keep=$(( keep_cells * ${#text} / tw ))
+    [ "$keep" -lt 1 ] && keep=1
+    text="${text:0:$keep}…"
+    width=$(( keep_cells + 3 ))
+  fi
+
+  if [ -z "$prev_bg" ]; then
+    row="${row}\033[48;2;${bg}m\033[38;2;${fg}m ${text} ${RESET}"
+  else
+    row="${row}\033[48;2;${bg}m\033[38;2;${prev_bg}m${RESET}\033[48;2;${bg}m\033[38;2;${fg}m ${text} ${RESET}"
+  fi
+  row_used=$(( row_used + width ))
+  prev_bg="$bg"
+done
+
+flush_row
