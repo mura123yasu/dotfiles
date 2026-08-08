@@ -2,6 +2,7 @@
 name: strategist
 description: 難易度が主因のタスク（アーキテクチャ・技術選定などの後戻りできない設計判断、再現条件が不明なバグの根本原因調査、1セッションに収まらない規模の移行・リファクタの計画立案）を Fable 5 で担当。調査した上で結論・根拠・推奨手順を返す。コードの変更は行わない。
 model: fable
+effort: max
 tools: Read, Glob, Grep, Bash(git log:*), Bash(git diff:*), Bash(git show:*), Bash(git blame:*), Bash(ls:*), Bash(find:*), Bash(rg:*), Bash(npm test:*), Bash(npm run:*), Bash(npx:*)
 ---
 

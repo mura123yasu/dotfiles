@@ -40,13 +40,14 @@
 
 ## エージェント一覧
 
-| タスク                                             | エージェント | モデル       |
-| -------------------------------------------------- | ------------ | ------------ |
-| 設計判断・根本原因調査・大規模計画（上記トリガー） | `strategist` | fable        |
-| コードレビュー・セキュリティレビュー               | `reviewer`   | 継承（Opus） |
-| 広域コード探索・長いログや大量ファイルの要約       | `explorer`   | haiku        |
-| rename・一括置換・テスト実行と結果報告・lint 修正  | `mechanic`   | haiku        |
-| 独立した並列調査（互いに依存しない複数トピック）   | 並列で複数   | 内容に応じて |
+| タスク                                             | エージェント | モデル       | effort           |
+| -------------------------------------------------- | ------------ | ------------ | ---------------- |
+| 設計判断・根本原因調査・大規模計画（上記トリガー） | `strategist` | fable        | max              |
+| コードレビュー・セキュリティレビュー               | `reviewer`   | 継承（Opus） | xhigh            |
+| 広域コード探索・長いログや大量ファイルの要約       | `explorer`   | haiku        | low（haiku は非対応） |
+| rename・一括置換・テスト実行と結果報告・lint 修正  | `mechanic`   | haiku        | low（haiku は非対応） |
+| ハーネス改善のための Web 調査                      | `harness-researcher` | sonnet | 継承（high）     |
+| 独立した並列調査（互いに依存しない複数トピック）   | 並列で複数   | 内容に応じて | 内容に応じて     |
 
 > 注意: 組み込み Explore エージェントは v2.1.198 以降メインセッションのモデルを継承するため、
 > トークン節約目的の探索委譲には使わない。必ず `explorer`（haiku）を使うこと。
@@ -78,6 +79,37 @@
 
 セッション途中の `/model` 切替は prompt cache を破棄するため、長い会話の途中では割高。
 単発の難所は切替ではなく `strategist` への委譲で処理する。
+
+## effort 選択
+
+モデルと同じく、effort も**役割ごとに宣言する**。一律固定にしない。
+一律固定は「一番難しいターンに全ターンを合わせる」やり方で、
+モデルはタスクごとに振り分けているのに effort だけ固定なのは片手落ちになる。
+
+| レイヤ | 指定場所 | 値 |
+| --- | --- | --- |
+| セッション既定 | `settings.json` の `effortLevel` | `high`（プロダクト既定値と同じ） |
+| サブエージェント | agent frontmatter の `effort:` | `explorer` / `mechanic` → `low`<br>`reviewer` → `xhigh`<br>`strategist` → `max` |
+| その場 | `/effort <level>` | 難所の直前で手動昇格（そのセッション限り） |
+
+優先順位は 環境変数 `CLAUDE_CODE_EFFORT_LEVEL` > frontmatter（当該エージェント/スキル実行中）>
+`effortLevel` > モデル既定。
+
+- **`effortLevel` に `max` は書けない。** `max` と `ultracode` はセッション限りの値で、
+  設定ファイルが受け付けるのは `low` / `medium` / `high` / `xhigh` の4つだけ。
+  frontmatter では `max` を指定できる（`strategist` がそれ）。
+- **haiku は effort 非対応。** `explorer` / `mechanic` の `effort: low` は現時点では効かない。
+  役割と設定を同じ場所に並べる目的で宣言してあり、モデルを変えたときに効く。
+  「haiku に xhigh を払っていた」わけではないので、削減効果を期待する対象は main セッション。
+- **`harness-researcher` は宣言しない**（セッション既定の `high` を継承）。effort に `inherit` は
+  書けないため、既定を使う役割は frontmatter に書かないことで表現する。
+- **`max` は万能ではない。** 公式ドキュメントに「demanding task で改善しうるが、収穫逓減が
+  あり overthinking しやすい。広く採用する前にテストせよ」とある。`strategist` に限定する理由。
+- 難所で1ターンだけ深く考えさせたいなら、effort を上げずにプロンプトへ `ultrathink` を含める
+  手もある（API へ送る effort は変わらない）。
+
+昇格トリガー（上記）で `strategist` に委譲すれば `max` はエージェント定義側で自動的に効く。
+手で `/effort` を打つのは例外ケースだけにする。
 
 ## advisor tool を採用しない理由（将来の再検討メモ）
 
