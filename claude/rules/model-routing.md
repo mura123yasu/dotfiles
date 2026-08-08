@@ -53,8 +53,11 @@
 
 ## モデル選択
 
-- **main セッション**: `settings.json` の `"model": "default"` で推奨モデルに追随する。
+- **main セッション**: `settings.json` に `model` キーを**置かない**ことで推奨モデルに追随する。
   特定バージョンを pin しないので、推奨が更新されれば自動で乗り換わる。
+  `"model": "default"` と書いてはいけない。`default` が「指定解除」として通るのは `/model`
+  コマンド・`--model` フラグ・`fallbackModel` の要素だけで、`model` キーでは未知のモデル名
+  として扱われ、context window を 200k と誤認して auto-compact が早期に走る。
 - **fable**: `strategist` 経由でのみ使う。最も難しく、最も長い仕事向け。
   Fable は手順ではなく「欲しい結果」を渡すと力を発揮する（自分で調べて自分で検証する）。
   Fable の安全分類器に弾かれた場合のフォールバックは `settings.json` の `fallbackModel`
