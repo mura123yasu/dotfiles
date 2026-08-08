@@ -38,7 +38,7 @@
       }
     ]
   },
-  "model": "claude-fable-5[1m]",
+  "model": "default",
   "permissions": {
     "allow": [
       "Bash(git checkout *)",
@@ -105,36 +105,18 @@
       "Edit(~/.zshrc)",
       "Edit(~/.bashrc)"
     ],
-    "ask": [
-      "Bash(gh pr merge *)",
-      "Bash(gh repo delete *)",
-      "Bash(launchctl *)"
-    ],
-    "defaultMode": "auto",
     "disableBypassPermissionsMode": "disable"
   },
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash ~/.claude/hooks/guard.sh"
-          }
-        ]
-      }
-    ]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "bash ~/.claude/statusline-command.sh",
-    "refreshInterval": 30
-  },
-  "enabledPlugins": {},
   "sandbox": {
     "enabled": true,
     "failIfUnavailable": false,
+    "filesystem": {
+      "denyRead": [
+        "~/.ssh",
+        "~/.aws",
+        "~/.config/gh"
+      ]
+    },
     "network": {
       "allowedDomains": [
         "api.anthropic.com",
@@ -146,16 +128,11 @@
         "registry.npmjs.org",
         "registry.yarnpkg.com"
       ]
-    },
-    "filesystem": {
-      "denyRead": [
-        "~/.ssh",
-        "~/.aws",
-        "~/.config/gh"
-      ]
     }
   },
-  "model": "default",
-  "effortLevel": "xhigh",
-  "agentPushNotifEnabled": true
+  "statusLine": {
+    "command": "bash ~/.claude/statusline-command.sh",
+    "refreshInterval": 30,
+    "type": "command"
+  }
 }
