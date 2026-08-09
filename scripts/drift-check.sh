@@ -28,11 +28,24 @@ for arg in "$@"; do
     esac
 done
 
-# 状態ディレクトリに書けない環境（sandbox 実行等）では一時ディレクトリへフォールバック
+# 状態ディレクトリに書けない環境（sandbox 実行等）では一時ディレクトリへフォールバック。
+# sandbox 下では mktemp 自体が失敗しうるので、候補を順に試して最初に書けたものを使う。
 if ! mkdir -p "$STATE_DIR" 2>/dev/null || [[ ! -w "$STATE_DIR" ]]; then
-    STATE_DIR="$(mktemp -d)"
+    for cand in "$(mktemp -d 2>/dev/null)" "${TMPDIR:-}/dotfiles-drift" "/tmp/dotfiles-drift"; do
+        [[ -n "$cand" ]] || continue
+        if mkdir -p "$cand" 2>/dev/null && [[ -w "$cand" ]]; then
+            STATE_DIR="$cand"
+            break
+        fi
+    done
 fi
-REPORT="$STATE_DIR/report.txt"
+
+# どこにも書けない場合はレポートの永続化を諦め、標準出力のみで報告する
+if [[ -w "$STATE_DIR" ]]; then
+    REPORT="$STATE_DIR/report.txt"
+else
+    REPORT=/dev/null
+fi
 
 if [[ "$(uname)" == "Darwin" ]]; then
     OS=mac
@@ -117,13 +130,29 @@ if [[ "$OS" == "wsl" ]]; then
 else
     # 2c. Mac: Brewfile と実環境の差分
     if command -v brew >/dev/null 2>&1; then
-        if ! brew bundle check --file="$DOTFILES_DIR/Brewfile" >/dev/null 2>&1; then
-            add "PKG | Brewfile 記載のパッケージに未インストールあり（brew bundle check 失敗）"
-        fi
-        dump_diff="$(brew bundle dump --file=- 2>/dev/null | sort | comm -23 - <(sort "$DOTFILES_DIR/Brewfile"))"
-        for line in ${(f)dump_diff}; do
-            add "PKG | Brewfile にないインストール済みパッケージ: $line。Brewfile への追加要否を判断すること"
+        # brew bundle check は「未インストール」と「インストール済みだが古い」を区別しない。
+        # 総括メッセージだけでは対処が決められないので --verbose の明細行を個別に報告する。
+        # 明細は stderr に出るため 2>&1 で拾う（brew の警告類は grep で落とす）。
+        check_detail="$(brew bundle check --file="$DOTFILES_DIR/Brewfile" --verbose 2>&1 | grep '^→ ')"
+        for line in ${(f)check_detail}; do
+            pkg="${line#→ }"
+            pkg="${pkg% needs to be installed or updated.}"
+            add "PKG | Brewfile 記載だが未インストールまたは古い: $pkg。brew bundle install / brew upgrade のどちらで解消するか判断すること"
         done
+
+        # dump はコメント行（パッケージ説明）を含むため、両側から除いてから突き合わせる
+        dump_raw="$(brew bundle dump --file=- 2>/dev/null)"
+        if [[ -z "$dump_raw" ]]; then
+            # sandbox 等で brew がキャッシュを書けないと dump が空になる。
+            # 「差分なし」と区別がつかないため、判定不能として報告する。
+            add "PKG | brew bundle dump が実行できず Brewfile との突き合わせ不能。sandbox 外で再実行すること"
+        else
+            dump_diff="$(printf '%s\n' "$dump_raw" | grep -vE '^[[:space:]]*(#|$)' | sort |
+                comm -23 - <(grep -vE '^[[:space:]]*(#|$)' "$DOTFILES_DIR/Brewfile" | sort))"
+            for line in ${(f)dump_diff}; do
+                add "PKG | Brewfile にないインストール済みパッケージ: $line。Brewfile への追加要否を判断すること"
+            done
+        fi
     else
         add "PKG | brew コマンドが見つからない"
     fi
@@ -154,7 +183,7 @@ for f in "${findings[@]}"; do
     is_ignored "$f" || filtered+=("$f")
 done
 
-touch "$STATE_DIR/last-check"
+touch "$STATE_DIR/last-check" 2>/dev/null
 
 if (( ${#filtered[@]} == 0 )); then
     : > "$REPORT"
