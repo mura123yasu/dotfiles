@@ -51,6 +51,7 @@ link "$DOTFILES_DIR/config/mise/config.toml"  "$HOME/.config/mise/config.toml"
 # ---- Claude Code 設定 ----
 info "Claude Code 設定をリンク中..."
 mkdir -p "$HOME/.claude/skills"
+link "$DOTFILES_DIR/CLAUDE.md"                      "$HOME/.claude/CLAUDE.md"
 link "$DOTFILES_DIR/claude/settings.json"           "$HOME/.claude/settings.json"
 link "$DOTFILES_DIR/claude/statusline-command.sh"   "$HOME/.claude/statusline-command.sh"
 link "$DOTFILES_DIR/claude/skills/github-push"            "$HOME/.claude/skills/github-push"

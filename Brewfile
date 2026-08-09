@@ -26,12 +26,21 @@ brew "zsh-syntax-highlighting"
 
 # --- Casks (GUI Apps) ---
 brew "colima"
-cask "docker"
+# docker cask は upstream で docker-desktop に改名された
+cask "docker-desktop"
 cask "ghostty"
+cask "visual-studio-code"
 
 # --- Fonts ---
 cask "font-hack-nerd-font"
 cask "font-jetbrains-mono-nerd-font"
 
+# --- npm グローバルパッケージ ---
+npm "@devcontainers/cli"
+npm "@google/gemini-cli"
+npm "@openai/codex"
+npm "vercel"
+
 # --- VSCode Extensions ---
 vscode "anthropic.claude-code"
+vscode "ms-vscode-remote.remote-containers"

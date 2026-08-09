@@ -60,3 +60,5 @@ dotfiles リポジトリ（`~/ghq/github.com/mura123yasu/dotfiles`）を実環�
 
 - `~/.claude` 配下への書き込み（skills リンク作成等）と `git push` はサンドボックスに拒否される。サンドボックス外で再実行すること
 - `git add -A` はリポジトリ直下の `.bash_profile` で「can only add regular files」エラーになる。対象ファイルを明示して `git add` すること
+- Mac の `brew` 系コマンド（`bundle check` / `bundle dump` / `outdated`）はサンドボックスだと Cellar とキャッシュへの書き込みを拒否されて誤った結果を返す。パッケージ判定は必ずサンドボックス外で実行すること
+- `brew bundle check` は「未インストール」と「インストール済みだが古い」を区別しない。`brew list --versions` で実際に入っているか確認してから (a)(b) を分類すること（古いだけなら (b) `brew upgrade`）
