@@ -2,6 +2,9 @@
 
 Mac / WSL (Ubuntu) の初期セットアップ記録と設定ファイル管理。
 
+Claude Code のハーネス（設計思想・モデルルーティング・ガードレール・運用）の全体像は
+[`docs/claude-usage.md`](docs/claude-usage.md) にまとめている。
+
 ## WSL セットアップ手順
 
 ### 1. git の初期設定
