@@ -67,6 +67,11 @@ info "グローバル gitignore を有効化中..."
 git config --global core.excludesFile "$HOME/.config/git/ignore"
 success "core.excludesFile 設定完了"
 
+# ghq のルート。未設定でも既定は ~/ghq だが、GOPATH 等の影響を受けないよう明示する。
+info "ghq.root を設定中..."
+git config --global ghq.root "$HOME/ghq"
+success "ghq.root 設定完了"
+
 # ---- git フィルタ設定 ----
 # settings.json は Claude Code の書き換えでキー順が変わるため、比較時に jq で正規化する
 info "git フィルタ (sortjson) を設定中..."
