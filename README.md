@@ -45,6 +45,7 @@ zsh ~/ghq/github.com/mura123yasu/dotfiles/install.wsl.sh
 - [Slack](https://slack.com/downloads/mac)
 - [1Password](https://1password.com/downloads/mac/)
 - [Xcode](https://apps.apple.com/jp/app/xcode/id497799835)
+- [Alfred](https://www.alfredapp.com/)（Powerpack のライセンス紐付けがあるため brew ではなく手動）
 
 ### 2. git の初期設定
 
@@ -79,12 +80,14 @@ $(brew --prefix)/opt/fzf/install
 # リポジトリを clone
 ghq get mura123yasu/dotfiles
 
-# シンボリックリンクを作成
-ln -sf ~/ghq/github.com/mura123yasu/dotfiles/.zshrc ~/.zshrc
-ln -sf ~/ghq/github.com/mura123yasu/dotfiles/.claude/settings.json ~/.claude/settings.json
-ln -sf ~/ghq/github.com/mura123yasu/dotfiles/.claude/statusline-command.sh ~/.claude/statusline-command.sh
-ln -sf ~/ghq/github.com/mura123yasu/dotfiles/.claude/subagent-statusline.sh ~/.claude/subagent-statusline.sh
+# シンボリックリンクを展開
+zsh ~/ghq/github.com/mura123yasu/dotfiles/install.sh
 ```
+
+スクリプトが以下を自動で行います：
+- dotfiles のシンボリックリンク展開（`~` / `~/.config` / `~/.claude`）
+- グローバル gitignore（`core.excludesFile`）と ghq のルート（`ghq.root`）の設定
+- 本リポジトリ用の git フィルタ（`sortjson`）の設定
 
 ## ファイル管理方針（共用 / OS 別）
 
