@@ -104,6 +104,7 @@ Mac と WSL で無理に設定ファイルを共用せず、差分が出るも�
 | `config/mise/config.toml` | `~/.config/mise/config.toml` | mise グローバルツール設定（node 等） |
 | `claude/settings.json` | `~/.claude/settings.json` | Claude Code グローバル設定（permissions / sandbox / hooks 等）。macOS 専用の deny ルール（`pbcopy` 等）は WSL では発火しないだけで無害 |
 | `claude/statusline-command.sh` | `~/.claude/statusline-command.sh` | ステータスライン表示スクリプト |
+| `claude/subagent-statusline.sh` | `~/.claude/subagent-statusline.sh` | サブエージェント行のステータスライン表示スクリプト（モデル名・effort・トークンを表示） |
 | `claude/skills/` | `~/.claude/skills/` 以下 | Claude Code スキル |
 | `claude/hooks/` | `~/.claude/hooks` | フック群。`guard.sh`（PreToolUse ガード）/ `notify.sh`（Notification・Stop の通知音。OS 判定で WSL は powershell.exe、Mac は afplay） |
 | `claude/rules/` | `~/.claude/rules` | モデルルーティング等のルール |
