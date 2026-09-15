@@ -12,6 +12,13 @@
 
 -->
 
+## 2026-09-15
+
+- 確認した範囲: CHANGELOG v2.1.271 まで（前回確認済みの v2.1.220 以降、v2.1.257〜v2.1.271 を重点確認。v2.1.221〜v2.1.256 の中間区間は要約ツールの制約で個別バレット未確認の可能性があり次回要再確認）/ 公式ドキュメント hooks・sub-agents・skills・settings-reference・model-config を確認 / Anthropic news・engineering は `anthropic.com`/`claude.com` への直接 WebFetch がこの実行環境のプロキシで遮断され本文未読（WebSearch のスニペットのみ。2026-09-14 付の CI 記事を検知したがハーネス関連度は低）/ コミュニティは WebSearch ベースで 2026-09-09 まで確認（Reddit/HN 系サイトへの直接 WebFetch は前回同様ほぼ 403）
+- 主な発見: (1) v2.1.271 で agent frontmatter に `omitClaudeMd`（CLAUDE.md 読み込み省略）が追加されたが、公式 sub-agents リファレンスにはまだ未掲載でドキュメント反映待ちと判明。(2) 公式 sub-agents リファレンスで `isolation: worktree`（サブエージェントを一時 git worktree に隔離実行）を確認、コミュニティ複数ソースも「ファイル書き込み系 subagent にはデフォルトで付けるべき」と一致。(3) `maxEffortLevel`（v2.1.267、settings.json、値は effortLevel と同じ low/medium/high/xhigh）はサブエージェント frontmatter の `effort` も含めて上限キャップすることを公式ドキュメントで確認 — `strategist` の `effort: max` を弱める方向に働くため本リポジトリでは非採用と判断（起案せず）。(4) `bashOutputMaxChars`/`taskOutputMaxChars`（v2.1.261、既定 8000/16000 文字、上限 128K）を確認したが、具体的な支障事例がなく起案は見送り。(5) Claude Fable 5.1（v2.1.257）関連のバグ（`model: fable` エージェントの context window タグ無視・プロンプトキャッシュ無効化等）は v2.1.260 で解消済みと確認、本リポジトリはエイリアス指定（`model: fable`）のため影響なし・対応不要。(6) コミュニティで「Claude Mods」（TypeScript製ミドルウェア方式の新 hook、`CLAUDE_ENABLE_FUNCTION_HOOKS=1` で先行テスト可、2026-09-09 時点で「数週間以内に出荷」予告）の動きを検知。未リリースの実験的機能のため今回は起案せず、次回サイクルで追跡する
+- 提案: 新規起案 2 件（いずれも status: proposed）→ `20260915-mechanic-isolation-worktree.md`、`20260915-omit-claude-md-explorer-mechanic.md`。既存の保留提案 `20260719-subagent-report-contract.md` は今回のフェーズ3（レビュー）非実施のため判断せず `status: proposed` のまま維持
+- 備考: 今回は定期実行のため、フェーズ3（レビュー）・フェーズ4（実装）は行っていない。両提案とも `/harness-improve` 実行時にローカルでレビュー・採否判断が必要
+
 ## 2026-08-08
 
 - 確認した範囲: 新規の Web 調査なし（フェーズ3・4 のみ実施）。PR #38 でマージ済みの起案2件と、保留中だった `20260719-subagent-report-contract.md` の採否を判断した。実装前の裏取りとして公式ドキュメント hooks（SubagentStop セクション）と settings スキーマを再確認
