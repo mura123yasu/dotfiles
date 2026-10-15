@@ -12,6 +12,13 @@
 
 -->
 
+## 2026-10-15
+
+- 確認した範囲: CHANGELOG v2.1.300 まで（v2.1.220〜v2.1.300、バグ修正中心の v2.1.221〜283 は機能追加のみ抽出）/ 公式ドキュメント hooks・sub-agents・settings-reference・slash-commands（2026-10-15 時点）/ Anthropic news 2026-10-14 まで、Engineering blog は 2026-05-25 が最新で更新なし / コミュニティは claudeissues.com を 2026-01〜2026-08-23 の範囲で確認（ウィンドウ内の新規投稿は issue #88995 のみ）。Reddit・Hacker News Algolia API は本環境のプロキシから到達不可で今回も調査不能
+- 主な発見: (1) `advisorModel` が公式に `"fable"` を受け付けると settings-reference に明記され、2026-08 時点で「Fable は advisor に選べない」としていた既知の制約が解消された。(2) v2.1.295+ でフックハンドラ共通フィールド `onFailure`（既定 `"continue"`）が追加され、guard.sh のような PreToolUse ガードが異常終了した場合に素通りする経路が設定レベルで塞げるようになった。(3) Agent ツール呼び出し単位で `effort` を指定できる機能（v2.1.292、frontmatter より優先・resume 後も保持）を確認。(4) コミュニティ側では v2.1.163（2026-06-04）以降 SubagentStop の `additionalContext` 返却がフックエラー扱いされないことが裏付けられ、既存の保留提案（`20260719-subagent-report-contract.md`）の実装方針を補強した一方、未解決の SubagentStop イベント信頼性の穴（issue #88995、agent_type 空・transcript 不在）も確認した。(5) 2026年6-7月に集中したサブエージェント再帰的増殖バグ（計画した3〜5体が最大583体に増殖、Windows で CPU 100% ハング）は v2.1.217（2026-07-21/22）で既定動作（ネスト不可・同時実行数20キャップ）として修正済みであり、本リポジトリの「並列2〜4推奨」ルールを裏付ける実例として記録（既に修正済みのため新規提案はしない）
+- 提案: 新規起案 3 件（いずれも status: proposed）→ `20261015-advisor-fable.md`、`20261015-hook-onfailure-block.md`、`20261015-agent-call-effort-param.md`。既存の保留提案 `20260719-subagent-report-contract.md` には新たな裏付け情報と実装時の注意点を判断記録に追記（起案数には含めない、status は proposed のまま）
+- 備考: `sandbox.network.strictAllowlist`（user/managed スコープ）や `maxEffortLevel` / `allowedProviders` 等の新設定も確認したが、具体的な適用先（許可すべきホスト一覧の精査等）が今回の調査だけでは詰められず起案は見送った。次回サイクルで深掘りする価値がある。今回はフェーズ1・2・5のみを実施し、フェーズ3（レビュー）・4（実装）は行っていない（定期実行の制約）
+
 ## 2026-08-08
 
 - 確認した範囲: 新規の Web 調査なし（フェーズ3・4 のみ実施）。PR #38 でマージ済みの起案2件と、保留中だった `20260719-subagent-report-contract.md` の採否を判断した。実装前の裏取りとして公式ドキュメント hooks（SubagentStop セクション）と settings スキーマを再確認

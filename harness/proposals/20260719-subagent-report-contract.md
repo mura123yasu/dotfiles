@@ -50,3 +50,14 @@ SubagentStop フックを追加し、カスタムサブエージェント（revi
   フィードバックを返せる）。実装可能だが、同サイクルで他2件を先に入れる判断となったため見送り。
   次回サイクルで再提示する。実装する場合は additionalContext による警告のみとし、
   `decision: block` は使わない方針（正当な「発見なし」報告を弾いてループする risk を避ける）。
+- 2026-10-15: 保留を継続（status: proposed のまま）。コミュニティ調査（claudeissues.com）で
+  2点を追加確認: (1) v2.1.163（2026-06-04）以降、Stop/SubagentStop フックが
+  `hookSpecificOutput.additionalContext` を返してもフックエラー扱いされなくなったことが
+  issue #65495 の記録から裏付けられ、「additionalContext のみで警告、block は使わない」
+  という既存の実装方針がそのまま current の CLI 挙動と整合することを再確認した。
+  (2) 未解決の issue #88995（2026-08-23 オープン）で、発行していないはずのサブエージェントに
+  対して SubagentStop イベントが発火し `transcript_path` が存在せず `agent_type` が空になる
+  事例が報告されている（同一プロジェクトフォルダで複数セッションを同時に開いている場合に
+  再現しやすい模様、再現性は低い）。実装時は `agent_id` の妥当性チェックや
+  `transcript_path` の存在確認といったガードを入れ、空の `agent_type` を安全側
+  （警告なしで通す）に倒す設計が必要。この注意点を実装時の Gotcha として記録しておく。
