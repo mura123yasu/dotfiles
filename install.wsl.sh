@@ -156,6 +156,8 @@ link "$DOTFILES_DIR/claude/subagent-statusline.sh"  "$HOME/.claude/subagent-stat
 link "$DOTFILES_DIR/claude/skills/github-push"            "$HOME/.claude/skills/github-push"
 link "$DOTFILES_DIR/claude/skills/dotfiles-drift-check"   "$HOME/.claude/skills/dotfiles-drift-check"
 link "$DOTFILES_DIR/claude/skills/harness-improve"        "$HOME/.claude/skills/harness-improve"
+link "$DOTFILES_DIR/claude/skills/park"                   "$HOME/.claude/skills/park"
+link "$DOTFILES_DIR/claude/skills/wip"                    "$HOME/.claude/skills/wip"
 link "$DOTFILES_DIR/claude/hooks"                   "$HOME/.claude/hooks"
 link "$DOTFILES_DIR/claude/rules"                   "$HOME/.claude/rules"
 link "$DOTFILES_DIR/claude/agents"                  "$HOME/.claude/agents"
