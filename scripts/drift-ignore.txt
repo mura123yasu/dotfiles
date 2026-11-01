@@ -2,3 +2,6 @@
 # 「環境固有で dotfiles 管理しない」と判断した項目をここに追記する。
 # 例:
 #   未管理のスキル: /home/mura123yasu/.claude/skills/local-only.md
+
+# claude.ai から自動同期される anthropic-skills（pptx / docx / pdf 等）の置き場。Claude Code が管理する
+/.claude/skills/synced。
