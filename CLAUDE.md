@@ -28,3 +28,6 @@
 
 - 全リポジトリの進捗・バックログは `~/ghq/github.com/mura123yasu/local-workspace`（Mac）/ `~/ghq/github.com/mura123yasu/local-workspace-win`（WSL）で統合管理している。
 - 「次何すればいい？」と聞かれたら local-workspace の `/next` スキルとバックログを参照すること。
+- ただし local-workspace と auto memory は各 PC にしか無い。**対象リポジトリがある作業の詳細ステータスは、
+  そのリポジトリの `docs/STATUS.md` に書いて push する**。local-workspace 側は索引にとどめる。
+  詳細は `~/.claude/rules/work-status.md`。
