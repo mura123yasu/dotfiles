@@ -12,6 +12,38 @@
 
 -->
 
+## 2026-10-01
+
+- 確認した範囲: CHANGELOG v2.1.221〜v2.1.286（最新）まで / 公式ドキュメント（hooks, sub-agents,
+  settings, best-practices）を 2026-08-02 時点からの差分で確認 / Anthropic News・Engineering
+  ブログ 2026-07-24〜2026-09-29（最新確認記事は "Giving companies more control over their AI
+  agents, with NVIDIA"）/ コミュニティは gist.github.com/techygarg（2026-08-14 更新）・
+  github.com/shanraisshan/claude-code-best-practice（2026-09-30 更新バッジ）・GitHub issue 検索
+  まで。news.ycombinator.com は egress proxy でブロックされ WebSearch のスニペットのみ、
+  Reddit/dev.to/Substack 等も個別記事の WebFetch は不可で検索結果のみ参照（過去サイクルと同様の制約）
+- 主な発見: (1) v2.1.273 でサブエージェント frontmatter に `omitClaudeMd` が追加され、
+  CLAUDE.md の自動読み込みをスキップできるようになった。`model-routing.md` の
+  「コンテキスト移送コスト」軸にそのまま適用できる。(2) v2.1.284 で `/doctor prompt-audit`
+  （CLAUDE.md・skills・agents・commands の旧世代プロンプトパターン監査）が追加された。
+  (3) v2.1.275 で claude.ai アカウント側のスキル・プラグインを端末セッションに自動同期する
+  機能が追加され、`syncClaudeAiSkills` / `syncClaudeAiPlugins` で無効化できる。本リポジトリは
+  dotfiles 経由の再現性を前提にしているため無効化が方針と整合する。(4) `PreModelSwitch` /
+  `PostModelSwitch` hook、auto mode のサーバーサイド分類器デフォルト化とそれに伴う
+  セキュリティ論争（The Register, Cybernews 報道）、Agent Teams・Agent view・`/batch`
+  （5〜30並列ファンアウト）等の新機能を確認したが、本リポジトリの現状の構成への具体的な
+  適用先が弱いか、既存方針（並列2〜4体目安等）との優先度を比較してこのサイクルでは見送った。
+  (5) 公式ベストプラクティスガイドの改訂内容（Explore→Plan→Implement→Commit、アドバーサリアル
+  レビュー等）は `reviewer` エージェント・`code-review` スキルの既存設計とおおむね整合することを
+  確認（新規差分は小さい）
+- 提案: 新規起案 3 件（いずれも status: proposed、今回はフェーズ3・4未実施のため採否判断なし）→
+  `20261001-omit-claude-md-for-mechanical-agents.md`、
+  `20261001-doctor-prompt-audit-in-harness-improve.md`、
+  `20261001-disable-claude-ai-sync.md`。保留中の `20260719-subagent-report-contract.md` は
+  今回新たな技術的差分なし（前回までの確認内容から変化なし）のため判断記録への追記は省略
+- 備考: 本サイクルは定期・非対話実行のため、フェーズ3（レビュー）・フェーズ4（実装）は行わず、
+  起案（status: proposed）と記録・PR作成のみ実施。レビューと実装は次回ローカルでの
+  `/harness-improve` 実行に委ねる
+
 ## 2026-08-08
 
 - 確認した範囲: 新規の Web 調査なし（フェーズ3・4 のみ実施）。PR #38 でマージ済みの起案2件と、保留中だった `20260719-subagent-report-contract.md` の採否を判断した。実装前の裏取りとして公式ドキュメント hooks（SubagentStop セクション）と settings スキーマを再確認
