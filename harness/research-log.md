@@ -12,6 +12,13 @@
 
 -->
 
+## 2026-09-01
+
+- 確認した範囲: CHANGELOG v2.1.252 まで（前回範囲 v2.1.220 からの差分を精査）/ 公式ドキュメント hooks・skills・settings・sub-agents を2026-09-01時点で再確認 / Anthropic News 2026-08-28（学区向けプラン）まで、Engineering ブログは2026-04-23以降更新なしを再確認 / コミュニティは github.com/shanraisshan/claude-code-best-practice（2026-08-31更新）・github.com/FlorianBruniaux/claude-code-ultimate-guide（2026-09-01更新, v3.43.0）・github.com/karanb192/claude-code-hooks まで直接確認。他は WebFetch egress遮断のため WebSearch スニペット止まり（確度は中〜低と明記）
+- 主な発見: (1) `PreModelSwitch`/`PostModelSwitch` フックイベントが v2.1.251 で追加・正式仕様化（モデル切替の前後で発火、Pre側はブロック可能）。(2) sub-agents ドキュメントでフォークモードのキャッシュ完全継承デフォルトON（v2.1.232）、agent frontmatter の `experimental.cacheTtl`（v2.1.248）、同時実行数上限（デフォルト20、`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`）とネスト深度上限（デフォルト3、`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`）が正式文書化された。(3) `/effort` がv2.1.251でモデルごとに保存される仕様に変更。(4) コミュニティ（複数の日付付き記事、確度は中程度、egress制約でスニペット止まり）で「Claude Code Auto Mode」が2026-08-14にPro/Max/Teamの新規セッションでデフォルト化されたという言及を複数確認したが、一次情報源（code.claude.com・CHANGELOG）では未確認のため今回は起案見送り、次回サイクルで高確度ソースでの裏取りを推奨。(5) コミュニティで SubagentStop×「納品契約」パターンへの言及を確認し、保留中の既存提案 `20260719-subagent-report-contract.md` を補強（判断記録に追記、status変更なし）
+- 提案: 新規起案 2 件（いずれも status: proposed）→ `20260901-model-switch-hook-logging.md`（PreModelSwitch/PostModelSwitch でモデル切替をログ化）、`20260901-subagent-official-limits-doc.md`（同時実行数・ネスト深度の公式上限を model-routing.md に追記）。レビュー・実装は次回 `/harness-improve` ローカル実行時に判断
+- 備考: 今回はフェーズ1・2・5のみの定期実行（スケジュール実行、AskUserQuestion 不可のためフェーズ3レビューなし、フェーズ4実装なし）。過去の rejected 提案は0件（既存5件はすべて done または proposed）で、再提案回避の確認対象なし。Auto Mode の件は次回サイクルでの最優先調査候補として引き継ぐ
+
 ## 2026-08-08
 
 - 確認した範囲: 新規の Web 調査なし（フェーズ3・4 のみ実施）。PR #38 でマージ済みの起案2件と、保留中だった `20260719-subagent-report-contract.md` の採否を判断した。実装前の裏取りとして公式ドキュメント hooks（SubagentStop セクション）と settings スキーマを再確認
