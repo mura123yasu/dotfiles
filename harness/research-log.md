@@ -12,6 +12,44 @@
 
 -->
 
+## 2026-11-15
+
+- 確認した範囲: CHANGELOG v2.1.268〜v2.1.325（最新。v2.1.221〜267 は未精査のまま残っており次回継続可）/
+  公式ドキュメント hooks・sub-agents・settings・settings-reference を本日時点で確認 /
+  Anthropic News を 2026-11-15 時点のトップページまで確認（Fable 5.2 / Mythos 5.2 発表の
+  2026-11-09 まで。Claude Code 単体の機能ブログは該当期間内で発見なし）/ コミュニティは
+  前回確認済みの gist（techygarg）・shanraisshan リポジトリの更新有無を再確認（実質更新なし）に加え、
+  サブエージェント設計・SKILL.md ベストプラクティス・hooks 品質ゲートパターン・モデル世代比較・
+  Agent Teams に関する複数の2026年記事を確認（日付不明な記事が多く個別の公開日は未検証のものを含む）
+- 主な発見: (1) Opus 5.5（2026-09-22）・Sonnet 5.5（2026-09-28）・Haiku 5.5（2026-10-07）・
+  Fable 5.2（2026-11-09、同時に vetted 組織限定の Mythos 5.2 も発表）が各世代デフォルトとして
+  順次リリース。本リポジトリはモデル指定を alias（`fable`/`opus`/`sonnet`）か未指定で統一して
+  おり pin していないため、このモデル更新自体は追従不要と確認（2026-08-08 の判断方針が機能した）。
+  (2) v2.1.277 で Fable が advisor から恒常的に選択可能になり、`model-routing.md` の
+  「advisor tool を採用しない理由」メモが前提としていた制約（Fable が advisor で
+  temporarily unavailable）が解消済みと確認。(3) v2.1.325 で、`allowed-tools`/`hooks` を
+  宣言するスキルを scheduled tasks / `/loop` が無人実行する前に確認を求めるようになり、継続には
+  `permissions.allow` への `Skill(<name>)` 追加が必要。本リポジトリの `github-push` スキルが
+  対象（`harness-improve` 等は allowed-tools/hooks 未宣言のため対象外）。(4) v2.1.319 で
+  `permissions.denyInsteadOfPrompting` が追加（無人実行時の `ask` 項目の扱いに関係しうるが、
+  常時適用かどうかは要確認）。(5) hooks イベントが33種に拡充（`PreCompact`/`PostCompact`/
+  `PreModelSwitch`/`ConfigChange`/`DirectoryAdded` 等）。(6) SubagentHandback の返却形式が
+  v2.1.278 でインデント付きヘッダー区切りになり、report 本文が指示として誤解釈されない
+  フレーミングが入った（本サイクルの調査サブエージェント自身の報告でも実際に観測）。
+  (7) コミュニティ側では「サブエージェントの自己申告を信用せず hooks で決定的に検証する」
+  パターン（quality-gate-keeper 等）が複数ソースで紹介されていたが、個人運用の本リポジトリでは
+  commit ブロック等の強制までは過剰と判断し起案は見送り
+- 提案: 起案 3 件（新規、いずれも status: proposed）→
+  `20261115-advisor-model-fable.md`、`20261115-unattended-skill-permission.md`、
+  `20261115-deny-instead-of-prompting.md`。既存の保留提案
+  `20260719-subagent-report-contract.md` は判断記録に新知見（SubagentHandback のフレーミング
+  強化は別軸であり本提案の必要性は変わらない）を追記（起案数には含めない）。
+  `20260720-autoloop.md` は本サイクルの調査範囲に関連する新情報なし
+- 備考: 本サイクルは定期実行（スケジュールタスク）のため、フェーズ1・2・5のみを実施し、
+  フェーズ3（レビュー・AskUserQuestion）とフェーズ4（実装、claude/ 配下・CLAUDE.md・install
+  スクリプトの変更）は行っていない。起案3件はすべて status: proposed のまま。レビューは
+  この PR をマージ後、ローカルで `/harness-improve` を実行して採否判断する想定
+
 ## 2026-08-08
 
 - 確認した範囲: 新規の Web 調査なし（フェーズ3・4 のみ実施）。PR #38 でマージ済みの起案2件と、保留中だった `20260719-subagent-report-contract.md` の採否を判断した。実装前の裏取りとして公式ドキュメント hooks（SubagentStop セクション）と settings スキーマを再確認
