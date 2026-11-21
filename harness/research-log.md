@@ -12,6 +12,32 @@
 
 -->
 
+## 2026-11-01
+
+- 確認した範囲: CHANGELOG は v2.1.316 まで存在を確認（詳細に内容を精査したのは v2.1.284〜v2.1.316。
+  v2.1.220〜v2.1.283 は分量の都合で今回は個別確認せず、次回サイクルへ持ち越し）/ 公式ドキュメント
+  （hooks, sub-agents, skills, settings）を現行版で確認 / Anthropic News は 2026-09-09〜2026-10-28
+  の全項目を確認 / Anthropic Engineering は 2026-04-23 以降の更新有無のみ確認（記事本文は未読）/
+  コミュニティは WebFetch 制約（dev.to 等への `ENOTFOUND` が前回同様継続）の中で検索スニペット中心に
+  2026-11-01 時点まで確認
+- 主な発見: (1) hooks に `onFailure: "block"` が追加され、command/http タイプの hook が
+  クラッシュ・タイムアウト・不正出力を返した場合の挙動を「素通り」から「ブロック」に変更できるように
+  なった（CHANGELOG v2.1.295）→ 最終防壁として設計されている guard.sh のフェイルオープンな現状の
+  ギャップとして起案。(2) Haiku 5.5 / Sonnet 5.5 / Opus 5.5 がリリースされ各エイリアスのデフォルトに
+  なったが、本リポジトリはモデルをエイリアス指定のみで運用しているため変更なしで追従済みと確認。
+  (3) `CLAUDE_CODE_SUBAGENT_MODEL` / `_FORCE` 系環境変数・`CLAUDE_CODE_EFFORT_LEVEL` によるモデル/
+  effort の強制を再確認したが、本リポジトリの `.zshrc` 等にはいずれも未設定で現状問題なし。
+  (4) Auto Mode（新しい自動権限承認モード、`--enable-auto-mode`）の発表を確認したが、本リポジトリは
+  明示的な permissions allow/ask/deny と guard.sh による手動管理を継続する方針のため採用検討は見送り
+  （有効化もしていないことを確認）。(5) 実験的 hook handler type `agent` はガード判定の柔軟化に
+  使えそうだが experimental のため今回は見送り
+- 提案: 起案 1 件（新規、status: proposed）→ `20261101-guard-hook-onfailure-block.md`。既存の保留提案
+  `20260719-subagent-report-contract.md` は今回フェーズ3（レビュー）を実施しないため判断せず、保留継続
+- 備考: CHANGELOG の v2.1.220〜v2.1.283 区間は未精査のまま残っている。次回サイクルでこの区間の
+  見落としがないか優先的に確認すること。コミュニティ情報源の WebFetch 制約（dev.to / Reddit /
+  Hacker News 本文へのアクセス不可）は今回も継続しており、環境側のプロキシ許可ドメイン拡張の検討は
+  依然ペンディング
+
 ## 2026-08-08
 
 - 確認した範囲: 新規の Web 調査なし（フェーズ3・4 のみ実施）。PR #38 でマージ済みの起案2件と、保留中だった `20260719-subagent-report-contract.md` の採否を判断した。実装前の裏取りとして公式ドキュメント hooks（SubagentStop セクション）と settings スキーマを再確認
