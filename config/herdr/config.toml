@@ -1,5 +1,9 @@
 onboarding = false
 
+[ui]
+# 1 ワークスペース 1 セッションで使うので、タブが 1 つのときはタブバー（「1 +」の行）を出さない
+hide_tab_bar_when_single_tab = true
+
 # $session は Claude Code の statusline から送るセッション名
 # （dotfiles: claude/herdr-session-label.sh）。既定はディレクトリ名（workspace）が先頭。
 [ui.sidebar.agents]
