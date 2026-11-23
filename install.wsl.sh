@@ -142,10 +142,12 @@ link "$DOTFILES_DIR/home/.tmux.conf" "$HOME/.tmux.conf"
 info "~/.config の設定をリンク中..."
 mkdir -p "$HOME/.config/git"
 mkdir -p "$HOME/.config/mise"
+mkdir -p "$HOME/.config/herdr"
 
 link "$DOTFILES_DIR/config/starship.toml"     "$HOME/.config/starship.toml"
 link "$DOTFILES_DIR/config/git/ignore"        "$HOME/.config/git/ignore"
 link "$DOTFILES_DIR/config/mise/config.toml"  "$HOME/.config/mise/config.toml"
+link "$DOTFILES_DIR/config/herdr/config.toml" "$HOME/.config/herdr/config.toml"
 
 info "Claude Code 設定をリンク中..."
 mkdir -p "$HOME/.claude/skills"
