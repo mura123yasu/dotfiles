@@ -18,6 +18,11 @@ esac
 
 input=$(cat)
 
+# herdr の中なら、サイドバー用にセッション名を送る（statusline の描画は待たせない）
+if [ -n "${HERDR_PANE_ID:-}" ]; then
+  printf '%s' "$input" | bash "$(dirname "$(readlink -f "$0")")/herdr-session-label.sh" >/dev/null 2>&1 &
+fi
+
 # --- Extract fields ---
 cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // ""')
 model=$(echo "$input" | jq -r '.model.display_name // ""')
