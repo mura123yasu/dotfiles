@@ -47,11 +47,13 @@ info "~/.config の設定をリンク中..."
 mkdir -p "$HOME/.config/ghostty"
 mkdir -p "$HOME/.config/git"
 mkdir -p "$HOME/.config/mise"
+mkdir -p "$HOME/.config/herdr"
 
 link "$DOTFILES_DIR/config/starship.toml"     "$HOME/.config/starship.toml"
 link "$DOTFILES_DIR/config/ghostty/config"    "$HOME/.config/ghostty/config"
 link "$DOTFILES_DIR/config/git/ignore"        "$HOME/.config/git/ignore"
 link "$DOTFILES_DIR/config/mise/config.toml"  "$HOME/.config/mise/config.toml"
+link "$DOTFILES_DIR/config/herdr/config.toml" "$HOME/.config/herdr/config.toml"
 
 # ---- Claude Code 設定 ----
 info "Claude Code 設定をリンク中..."
