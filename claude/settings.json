@@ -28,6 +28,18 @@
         "matcher": "Bash"
       }
     ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "bash ~/.claude/hooks/herdr-agent-state.sh session",
+            "timeout": 10,
+            "type": "command"
+          }
+        ],
+        "matcher": "^(startup|resume|clear|compact|fork)$"
+      }
+    ],
     "Stop": [
       {
         "hooks": [
@@ -39,6 +51,7 @@
       }
     ]
   },
+  "language": "Japanese",
   "permissions": {
     "allow": [
       "Bash(git checkout *)",
@@ -138,5 +151,10 @@
   "subagentStatusLine": {
     "command": "bash ~/.claude/subagent-statusline.sh",
     "type": "command"
-  }
+  },
+  "voice": {
+    "enabled": true,
+    "mode": "hold"
+  },
+  "voiceEnabled": true
 }
