@@ -23,6 +23,8 @@ dotfiles リポジトリ（`~/ghq/github.com/mura123yasu/dotfiles`）の Claude 
   - コミュニティ担当: tips・ベストプラクティス・活用事例
 - main セッションでは Web 調査しない（context 汚染回避。model-routing ルール準拠）
 - status: proposed のまま残っている過去の保留提案があれば、このフェーズと並行して内容を再確認しておく
+- 未マージの調査 PR（ブランチ `harness/research-inbox`）があれば、その差分の提案とログも「既存」として扱う。
+  調査範囲の起点も、そのブランチの research-log.md の最新エントリにする
 
 ### 2. 立案
 
@@ -30,6 +32,8 @@ dotfiles リポジトリ（`~/ghq/github.com/mura123yasu/dotfiles`）の Claude 
 このリポジトリに取り込む価値のある拡張案を **0〜5件** 起案する。
 
 - 過去に status: rejected になった提案と同内容のものは再提案しない（却下理由を必ず読む）
+- **同じテーマの提案がすでにあれば（main でも、未マージの調査 PR のブランチでも）新しいファイルを作らず、
+  その提案ファイルの末尾に「YYYY-MM-DD: 〜」で追記する**。別ファイルで再提案すると重複が積み上がる
 - 価値のある案がなければ起案ゼロで構わない。無理に作らない
 - 各案は `harness/proposals/YYYYMMDD-<slug>.md` に以下の形式で書く:
 
@@ -80,6 +84,10 @@ sources:
 
 - `harness/research-log.md` の先頭に今回のエントリを追記する（日付・確認した範囲・主な発見の要約・提案数と採否）
 - **main への直接 commit は禁止**。`feature/harness-improve-YYYYMMDD` ブランチで、提案ファイル・調査ログ・実装をまとめてコミットし、PR を作成する（起案ゼロならログ更新のみを `chore/harness-log-YYYYMMDD` で PR）
+- 定期実行（調査と起案だけ）の場合は、固定ブランチ `harness/research-inbox` を使う。
+  **このブランチの PR が未マージで残っていれば、そのブランチに追記コミットして push し、新しい PR は作らない**
+  （PR にはコメントで今回の要約を残す）。マージ済み・無ければ main から作り直して PR を作る。
+  過去に毎回新しい PR を作っていたら、未レビューの PR が 7 本溜まり、main を基準に調べるため同じ提案が繰り返し出ていた
 - 最終報告: 主な発見、各提案の採否、PR の URL、ユーザーに残る作業（他端末でのリンク展開等）を簡潔にまとめる
 
 ## Gotchas
