@@ -102,7 +102,7 @@ Mac と WSL で無理に設定ファイルを共用せず、差分が出るも�
 | `config/starship.toml` | `~/.config/starship.toml` | プロンプト設定 |
 | `config/git/ignore` | `~/.config/git/ignore` | グローバル gitignore |
 | `config/mise/config.toml` | `~/.config/mise/config.toml` | mise グローバルツール設定（node 等） |
-| `config/herdr/config.toml` | `~/.config/herdr/config.toml` | herdr（AI エージェント向けターミナルワークスペース）設定。サイドバーに Claude Code のセッション名（`$session`）を出す |
+| `config/herdr/config.toml` | `~/.config/herdr/config.toml` | herdr（AI エージェント向けターミナルワークスペース）設定。スペースはカテゴリ単位、タブ 1 つが 1 セッション。サイドバーとタブ名に Claude Code のセッション名（`$session`）を出す |
 | `claude/settings.json` | `~/.claude/settings.json` | Claude Code グローバル設定（permissions / sandbox / hooks 等）。macOS 専用の deny ルール（`pbcopy` 等）は WSL では発火しないだけで無害 |
 | `claude/statusline-command.sh` | `~/.claude/statusline-command.sh` | ステータスライン表示スクリプト |
 | `claude/subagent-statusline.sh` | `~/.claude/subagent-statusline.sh` | サブエージェント行のステータスライン表示スクリプト（モデル名・effort・トークンを表示） |

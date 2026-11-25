@@ -1,19 +1,21 @@
 onboarding = false
 
 [ui]
-# 1 ワークスペース 1 セッションで使うので、タブが 1 つのときはタブバー（「1 +」の行）を出さない
+# workspace（スペース）はカテゴリ単位（例: Copilot エージェント / GAS アプリ / よろず）で、
+# その中のタブ 1 つが Claude Code の 1 セッション。タブが 1 つのときはタブバー（「1 +」の行）を出さない
 hide_tab_bar_when_single_tab = true
 
 # $session は Claude Code の statusline から送るセッション名
-# （dotfiles: claude/herdr-session-label.sh）。既定はディレクトリ名（workspace）が先頭。
+# （dotfiles: claude/herdr-session-label.sh）。同じ名前でタブ名も自動で付け替える。
 [ui.sidebar.agents]
 rows = [
   ["state_icon", "machine", "$session"],
-  ["agent", "workspace", "tab"],
+  ["agent", "workspace"],
 ]
 
+# スペースには複数セッションが入るので、セッション名ではなくカテゴリ名（workspace のラベル）を出す
 [ui.sidebar.spaces]
 rows = [
-  ["state_icon", "$session"],
-  ["workspace", "branch", "git_status"],
+  ["state_icon", "workspace"],
+  ["branch", "git_status"],
 ]
