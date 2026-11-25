@@ -3,8 +3,9 @@
 #
 # statusline-command.sh から、statusline の入力 JSON を stdin に渡して呼ばれる。
 # herdr の外（HERDR_PANE_ID が無い）では何もしない。
-# 送るトークンは pane と workspace の `$session`。表示位置は ~/.config/herdr/config.toml の
-# [ui.sidebar.agents] / [ui.sidebar.spaces] の rows で決める。
+# 送るのは pane の `$session` トークン（表示位置は ~/.config/herdr/config.toml の
+# [ui.sidebar.agents] の rows）。あわせて、その pane が入っているタブの名前もセッション名にする。
+# workspace はカテゴリ単位で複数セッションが入るため、workspace には送らない。
 
 [ -n "${HERDR_PANE_ID:-}" ] || exit 0
 command -v herdr >/dev/null 2>&1 || exit 0
@@ -26,7 +27,9 @@ cache="$cache_dir/${HERDR_PANE_ID//[^A-Za-z0-9]/_}"
 
 source_id="claude-session-name"
 herdr pane report-metadata "$HERDR_PANE_ID" --source "$source_id" --token "session=$name" >/dev/null 2>&1 || exit 0
-if [ -n "${HERDR_WORKSPACE_ID:-}" ]; then
-  herdr workspace report-metadata "$HERDR_WORKSPACE_ID" --source "$source_id" --token "session=$name" >/dev/null 2>&1
+# pane move でタブを移ると HERDR_TAB_ID は古いままなので、現在のタブは pane から引く
+if [ -n "$name" ]; then
+  tab_id=$(herdr pane get "$HERDR_PANE_ID" 2>/dev/null | jq -r '.result.pane.tab_id // empty' 2>/dev/null)
+  [ -n "$tab_id" ] && herdr tab rename "$tab_id" "$name" >/dev/null 2>&1
 fi
 printf '%s' "$name" >"$cache"
