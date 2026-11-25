@@ -54,6 +54,8 @@ link "$DOTFILES_DIR/config/ghostty/config"    "$HOME/.config/ghostty/config"
 link "$DOTFILES_DIR/config/git/ignore"        "$HOME/.config/git/ignore"
 link "$DOTFILES_DIR/config/mise/config.toml"  "$HOME/.config/mise/config.toml"
 link "$DOTFILES_DIR/config/herdr/config.toml" "$HOME/.config/herdr/config.toml"
+mkdir -p "$HOME/.local/bin"
+link "$DOTFILES_DIR/claude/cc-new.sh" "$HOME/.local/bin/cc-new"
 
 # ---- Claude Code 設定 ----
 info "Claude Code 設定をリンク中..."
