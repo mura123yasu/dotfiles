@@ -98,6 +98,7 @@
       "Bash(* ~/.ssh/*)",
       "Bash(* ~/.aws/*)",
       "Bash(* ~/.config/gh/*)",
+      "Bash(* ~/.config/ms-todo-mcp/*)",
       "Bash(* ~/.git-credentials)",
       "Bash(* ~/.netrc)",
       "Bash(* ~/.npmrc)",
@@ -115,6 +116,7 @@
       "Read(~/.aws/**)",
       "Read(~/.git-credentials)",
       "Read(~/.config/gh/**)",
+      "Read(~/.config/ms-todo-mcp/**)",
       "Edit(~/.zshrc)",
       "Edit(~/.bashrc)"
     ],
@@ -127,7 +129,8 @@
       "denyRead": [
         "~/.ssh",
         "~/.aws",
-        "~/.config/gh"
+        "~/.config/gh",
+        "~/.config/ms-todo-mcp"
       ]
     },
     "network": {
