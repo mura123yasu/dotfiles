@@ -15,6 +15,10 @@
 [ -n "${HERDR_PANE_ID:-}" ] || exit 0
 command -v herdr >/dev/null 2>&1 || exit 0
 
+# LANG のロケール（ja_JP.UTF-8 など）が入っていない環境では C ロケールになり、
+# sed や ${#var} が日本語をバイト単位で扱ってカテゴリ名を壊す。必ず入っている C.UTF-8 に固定する
+export LC_ALL=C.UTF-8
+
 script_dir=$(dirname "$(readlink -f "$0")")
 rules_file="$script_dir/herdr-categories.tsv"
 state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/herdr"
@@ -43,8 +47,13 @@ mkdir "$lock" 2>/dev/null || exit 0
 trap 'rmdir "$lock" 2>/dev/null' EXIT
 
 herdr pane report-metadata "$HERDR_PANE_ID" --source claude-session-name --token "session=$name" >/dev/null 2>&1 || exit 0
-printf '%s' "$name" >"$cache"
-[ -n "$name" ] || exit 0
+# 処理済みの印（$cache）は振り分けが終わってから書く。途中で失敗したら次の statusline で再挑戦する
+mark_done() { printf '%s' "$name" >"$cache"; }
+# 名前が空なら振り分けるものが無い
+if [ -z "$name" ]; then
+  mark_done
+  exit 0
+fi
 
 pane_json=$(herdr pane get "$HERDR_PANE_ID" 2>/dev/null) || exit 0
 pane_id=$(printf '%s' "$pane_json" | jq -r '.result.pane.pane_id // empty')
@@ -72,6 +81,7 @@ current_label=$(printf '%s' "$ws_list" | jq -r --arg w "$ws_id" '.result.workspa
 # すでにカテゴリのスペースにいる: 動かさず、タブ名だけ合わせる
 if is_category "$current_label"; then
   [ -n "$tab_id" ] && herdr tab rename "$tab_id" "$name" >/dev/null 2>&1
+  mark_done
   exit 0
 fi
 
@@ -129,6 +139,7 @@ if [ -z "$target_ws" ]; then
 fi
 
 herdr pane move "$pane_id" --new-tab --workspace "$target_ws" --label "$name" --focus >/dev/null 2>&1 || exit 0
+mark_done
 # workspace create が作った空のシェルのタブは要らない
 [ -n "$created_root_tab" ] && herdr tab close "$created_root_tab" >/dev/null 2>&1
 exit 0
